@@ -4,6 +4,27 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-tan-100: #f1e9db;
+  --color-tan-200: #e2d2b7;
+  --color-tan-300: #d3bb93;
+  --color-tan-400: #c4a46f;
+  --color-tan-500: #ac935b; /* Your base */
+  --color-tan-600: #8a7449;
+  --color-tan-700: #685537;
+  --color-tan-800: #463625;
+  --color-tan-900: #241713;
+
+  /* Black shades */
+  --color-black: #000;
+  --color-black-100: #e0e0e0;
+  --color-black-200: #c2c2c2;
+  --color-black-300: #a3a3a3;
+  --color-black-400: #858585;
+  --color-black-500: #666666;
+  --color-black-600: #474747;
+  --color-black-700: #292929;
+  --color-black-800: #1c1c1c;
+  --color-black-900: #141414;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -29,10 +50,10 @@
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
+  --color-secondary-foreground: #ac935b;
+  --color-secondary: #141414;
+  --color-primary-foreground: #141414;
+  --color-primary: #ac935b;
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);

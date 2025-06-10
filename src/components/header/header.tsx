@@ -35,10 +35,10 @@ export default function Header() {
                   key={item.name}
                   variant="none"
                   size="sm"
-                  className={`border-0 flex items-center space-x-2 transition-colors cursor-pointer ${
+                  className={`border-0 flex items-center space-x-2 transition-colors cursor-pointer hover:bg-transparent ${
                     isActive
-                      ? "!border-b-amber-300 border text-amber-400"
-                      : "hover:text-amber-400 "
+                      ? "!border-b-primary border text-primary"
+                      : "  text-black hover:text-tan-300 "
                   }`}
                   onClick={() => handleLinkClick(item.link)}
                 >
@@ -59,8 +59,8 @@ export default function Header() {
             <SheetContent side="right" className="w-[300px] p-2 py-3">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-2 px-2">
-                  <Bike className="h-6 w-6 text-primary" />
-                  <span className="text-xl font-bold text-primary">
+                  <Bike className="h-6 w-6 text-forground" />
+                  <span className="text-xl font-bold text-forground">
                     BikeRent
                   </span>
                 </div>
@@ -82,10 +82,10 @@ export default function Header() {
                     <Button
                       key={item.name}
                       variant="none"
-                      className={`justify-start space-x-3 h-12 cursor-pointer ${
+                      className={`justify-start space-x-3 h-12 cursor-pointer text-black ${
                         isActive
-                          ? "bg-amber-400 text-primary-foreground hover:bg-amber-500"
-                          : "hover:bg-amber-100 hover:text-accent-foreground"
+                          ? "bg-primary text-white hover:bg-tan-600"
+                          : "hover:bg-amber-100 hover:text-foreground"
                       }`}
                       onClick={() => handleLinkClick(item.link)}
                     >
