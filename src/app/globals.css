@@ -8,7 +8,7 @@
   --color-tan-200: #e2d2b7;
   --color-tan-300: #d3bb93;
   --color-tan-400: #c4a46f;
-  --color-tan-500: #ac935b; /* Your base */
+  --color-tan-500: #AC9456; /* Your base */
   --color-tan-600: #8a7449;
   --color-tan-700: #685537;
   --color-tan-800: #463625;
@@ -50,10 +50,10 @@
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
-  --color-secondary-foreground: #ac935b;
+  --color-secondary-foreground: #AC9456;
   --color-secondary: #141414;
   --color-primary-foreground: #141414;
-  --color-primary: #ac935b;
+  --color-primary: #AC9456;
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
