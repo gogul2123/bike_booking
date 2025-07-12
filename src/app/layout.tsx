@@ -4,7 +4,6 @@ import "./globals.css";
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,18 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Landing page */}
-        <Header variant="landing" />
-
-        {/* Home page - not logged in */}
-        {/* <Header variant="home" isLoggedIn={false} /> */}
-
-        {/* Home page - logged in */}
-        {/* <Header variant="home" isLoggedIn={true} /> */}
         <main className="flex min-h-screen flex-col bg-background text-foreground">
           {children}
         </main>
-        <Footer />
       </body>
     </html>
   );

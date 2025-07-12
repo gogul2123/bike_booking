@@ -1,11 +1,9 @@
-"use client";
+// "use client";
+
 // import React, { useState } from "react";
-// import { useForm } from "react-hook-form";
+// import { useForm, ControllerRenderProps } from "react-hook-form";
 // import { zodResolver } from "@hookform/resolvers/zod";
 // import * as z from "zod";
-// import { Eye, EyeOff, Mail, Lock, Bike, ArrowRight } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
 // import {
 //   Form,
 //   FormControl,
@@ -14,63 +12,34 @@
 //   FormLabel,
 //   FormMessage,
 // } from "@/components/ui/form";
-// import { Alert, AlertDescription } from "@/components/ui/alert";
-
-// // Input field configurations
-// const signInFields = [
-//   {
-//     name: "email",
-//     label: "Email Address",
-//     type: "email",
-//     placeholder: "Enter your email",
-//     icon: Mail,
-//   },
-//   {
-//     name: "password",
-//     label: "Password",
-//     type: "password",
-//     placeholder: "Enter your password",
-//     icon: Lock,
-//   },
-// ];
-
-// const forgotPasswordFields = [
-//   {
-//     name: "email",
-//     label: "Email Address",
-//     type: "email",
-//     placeholder: "Enter your email",
-//     icon: Mail,
-//   },
-// ];
+// import { Input } from "@/components/ui/input";
+// import { Button } from "@/components/ui/button";
+// import { AiOutlineArrowRight } from "react-icons/ai";
+// import { RiMotorbikeFill } from "react-icons/ri";
+// import { IoEye, IoEyeOff } from "react-icons/io5";
+// import { CiMail } from "react-icons/ci";
+// import { MdOutlineLock } from "react-icons/md";
 
 // // Validation schemas
 // const signInSchema = z.object({
-//   email: z
-//     .string()
-//     .min(1, "Email is required")
-//     .email("Please enter a valid email address"),
-//   password: z
-//     .string()
-//     .min(6, "Password must be at least 6 characters")
-//     .max(100, "Password is too long"),
+//   email: z.string().email("Please enter a valid email address"),
+//   password: z.string().min(6, "Password must be at least 6 characters"),
 // });
 
 // const forgotPasswordSchema = z.object({
-//   email: z
-//     .string()
-//     .min(1, "Email is required")
-//     .email("Please enter a valid email address"),
+//   email: z.string().email("Please enter a valid email address"),
 // });
 
-// export default function SignInPage() {
+// type SignInFormData = z.infer<typeof signInSchema>;
+// type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+
+// export default function LoginPage() {
 //   const [showPassword, setShowPassword] = useState(false);
 //   const [isLoading, setIsLoading] = useState(false);
 //   const [showForgotPassword, setShowForgotPassword] = useState(false);
 //   const [resetSent, setResetSent] = useState(false);
 
-//   // Sign in form
-//   const signInForm = useForm({
+//   const signInForm = useForm<SignInFormData>({
 //     resolver: zodResolver(signInSchema),
 //     defaultValues: {
 //       email: "",
@@ -78,17 +47,15 @@
 //     },
 //   });
 
-//   // Forgot password form
-//   const forgotPasswordForm = useForm({
+//   const forgotPasswordForm = useForm<ForgotPasswordFormData>({
 //     resolver: zodResolver(forgotPasswordSchema),
 //     defaultValues: {
 //       email: "",
 //     },
 //   });
 
-//   const onSignInSubmit = async (data: any) => {
+//   const handleSignIn = async (data: SignInFormData) => {
 //     setIsLoading(true);
-
 //     try {
 //       // Simulate API call
 //       await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -101,15 +68,13 @@
 //     }
 //   };
 
-//   const onForgotPasswordSubmit = async (data: any) => {
+//   const handleForgotPassword = async (data: ForgotPasswordFormData) => {
 //     setIsLoading(true);
-
 //     try {
 //       // Simulate API call
 //       await new Promise((resolve) => setTimeout(resolve, 1500));
 //       console.log("Password reset sent to:", data.email);
 //       setResetSent(true);
-//       // Add your password reset logic here
 //     } catch (error) {
 //       console.error("Password reset error:", error);
 //     } finally {
@@ -132,76 +97,22 @@
 //     signInForm.clearErrors();
 //   };
 
-//   const renderFormField = (
-//     field: any,
-//     form: any,
-//     showPasswordToggle = false
-//   ) => {
-//     const IconComponent = field.icon;
-
-//     return (
-//       <FormField
-//         key={field.name}
-//         control={form.control}
-//         name={field.name}
-//         render={({ field: formField }) => (
-//           <FormItem>
-//             <FormLabel className="text-gray-700 font-medium">
-//               {field.label}
-//             </FormLabel>
-//             <FormControl>
-//               <div className="relative">
-//                 <IconComponent className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-//                 <Input
-//                   type={
-//                     field.type === "password" && showPassword
-//                       ? "text"
-//                       : field.type
-//                   }
-//                   placeholder={field.placeholder}
-//                   {...formField}
-//                   className={`pl-10 ${
-//                     showPasswordToggle ? "pr-10" : ""
-//                   } py-3 rounded-xl border-2 border-gray-200 focus:border-amber-500 transition-colors data-[invalid]:border-red-300 data-[invalid]:focus:border-red-500`}
-//                 />
-//                 {showPasswordToggle && (
-//                   <button
-//                     type="button"
-//                     onClick={togglePasswordVisibility}
-//                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-//                   >
-//                     {showPassword ? (
-//                       <EyeOff className="w-5 h-5" />
-//                     ) : (
-//                       <Eye className="w-5 h-5" />
-//                     )}
-//                   </button>
-//                 )}
-//               </div>
-//             </FormControl>
-//             <FormMessage className="text-red-500 text-sm" />
-//           </FormItem>
-//         )}
-//       />
-//     );
-//   };
-
 //   if (showForgotPassword) {
 //     return (
-//       <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center p-4">
+//       <div className="min-h-screen bg-gradient-to-br from-[#141414] via-gray-800 to-[#141414] flex items-center justify-center p-4">
 //         <div className="w-full max-w-sm mx-auto">
-//           <div className="bg-white rounded-2xl shadow-xl p-6 space-y-6">
+//           <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6 backdrop-blur-lg border border-white/20">
 //             {/* Header */}
-//             <div className="text-center space-y-2">
+//             <div className="text-center space-y-4">
 //               <div className="flex justify-center">
-//                 <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center">
-//                   <Lock className="w-8 h-8 text-white" />
+//                 <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-tan-600 to-tan-700 rounded-xl shadow-lg text-white">
+//                   <MdOutlineLock />
 //                 </div>
 //               </div>
-//               <h1 className="text-2xl font-bold text-gray-900">
+//               <h1 className="text-2xl font-bold text-black">
 //                 {resetSent ? "Check Your Email" : "Forgot Password?"}
 //               </h1>
-//               <p className="text-gray-600 text-sm">
+//               <p className="text-gray-600 text-sm leading-relaxed">
 //                 {resetSent
 //                   ? "We've sent a password reset link to your email address."
 //                   : "Enter your email address and we'll send you a link to reset your password."}
@@ -209,53 +120,85 @@
 //             </div>
 
 //             {resetSent ? (
-//               <div className="space-y-4">
-//                 <Alert className="border-amber-200 bg-amber-50">
-//                   <Mail className="h-4 w-4 text-amber-600" />
-//                   <AlertDescription className="text-amber-800">
-//                     Password reset link sent to{" "}
-//                     <strong>{forgotPasswordForm.getValues("email")}</strong>
-//                   </AlertDescription>
-//                 </Alert>
+//               <div className="space-y-6">
+//                 <div className="p-4 bg-gradient-to-r from-tan-50 to-tan-100 border border-tan-200 rounded-xl">
+//                   <div className="flex items-center gap-3">
+//                     <CiMail className="h-5 w-5 text-tan-600" />
+//                     <div>
+//                       <p className="text-sm text-gray-700">
+//                         Password reset link sent to
+//                       </p>
+//                       <p className="font-semibold text-tan-700">
+//                         {forgotPasswordForm.getValues("email")}
+//                       </p>
+//                     </div>
+//                   </div>
+//                 </div>
 
 //                 <Button
 //                   onClick={goBackToSignIn}
-//                   className="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-xl font-semibold transition-colors"
+//                   className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
 //                 >
 //                   Back to Sign In
 //                 </Button>
 //               </div>
 //             ) : (
 //               <Form {...forgotPasswordForm}>
-//                 <div className="space-y-4">
-//                   {forgotPasswordFields.map((field) =>
-//                     renderFormField(field, forgotPasswordForm)
-//                   )}
+//                 <div className="space-y-6">
+//                   <FormField
+//                     control={forgotPasswordForm.control}
+//                     name="email"
+//                     render={({
+//                       field,
+//                     }: {
+//                       field: ControllerRenderProps<
+//                         ForgotPasswordFormData,
+//                         "email"
+//                       >;
+//                     }) => (
+//                       <FormItem>
+//                         <FormLabel className="text-black font-medium text-sm">
+//                           Email Address
+//                         </FormLabel>
+//                         <FormControl>
+//                           <div className="relative">
+//                             <CiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+//                             <Input
+//                               {...field}
+//                               type="email"
+//                               placeholder="Enter your email"
+//                               className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+//                             />
+//                           </div>
+//                         </FormControl>
+//                         <FormMessage />
+//                       </FormItem>
+//                     )}
+//                   />
 
-//                   <div className="space-y-3 pt-2">
+//                   <div className="space-y-3">
 //                     <Button
-//                       type="button"
-//                       onClick={forgotPasswordForm.handleSubmit(
-//                         onForgotPasswordSubmit
-//                       )}
+//                       type="submit"
 //                       disabled={isLoading}
-//                       className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+//                       onClick={forgotPasswordForm.handleSubmit(
+//                         handleForgotPassword
+//                       )}
+//                       className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
 //                     >
 //                       {isLoading ? (
 //                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
 //                       ) : (
 //                         <>
 //                           Send Reset Link
-//                           <ArrowRight className="w-4 h-4" />
+//                           <AiOutlineArrowRight className="w-4 h-4" />
 //                         </>
 //                       )}
 //                     </Button>
-
 //                     <Button
 //                       type="button"
 //                       variant="ghost"
 //                       onClick={goBackToSignIn}
-//                       className="w-full text-amber-600 hover:text-amber-700 hover:bg-amber-50 py-2 rounded-xl font-medium transition-colors"
+//                       className="w-full text-tan-600 hover:text-tan-700 hover:bg-tan-50 py-2 rounded-xl font-medium transition-colors"
 //                     >
 //                       Back to Sign In
 //                     </Button>
@@ -270,17 +213,17 @@
 //   }
 
 //   return (
-//     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center p-4">
+//     <div className="min-h-screen bg-gradient-to-br from-[#141414] via-gray-800 to-[#141414] flex items-center justify-center p-4">
 //       <div className="w-full max-w-sm mx-auto">
-//         <div className="bg-white rounded-2xl shadow-xl p-6 space-y-6">
+//         <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6 backdrop-blur-lg border border-white/20">
 //           {/* Header */}
-//           <div className="text-center space-y-2">
+//           <div className="text-center space-y-4">
 //             <div className="flex justify-center">
-//               <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center">
-//                 <Bike className="w-8 h-8 text-white" />
+//               <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-tan-600 to-tan-700 rounded-xl shadow-lg text-white">
+//                 <RiMotorbikeFill />
 //               </div>
 //             </div>
-//             <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
+//             <h1 className="text-2xl font-bold text-black">Welcome Back</h1>
 //             <p className="text-gray-600 text-sm">
 //               Sign in to your BikeRent account
 //             </p>
@@ -288,36 +231,98 @@
 
 //           {/* Sign In Form */}
 //           <Form {...signInForm}>
-//             <div className="space-y-4">
-//               {signInFields.map((field) =>
-//                 renderFormField(field, signInForm, field.type === "password")
-//               )}
+//             <div className="space-y-6">
+//               <div className="space-y-4">
+//                 {/* Email Field */}
+//                 <FormField
+//                   control={signInForm.control}
+//                   name="email"
+//                   render={({
+//                     field,
+//                   }: {
+//                     field: ControllerRenderProps<SignInFormData, "email">;
+//                   }): React.JSX.Element => {
+//                     return (
+//                       <FormItem>
+//                         <FormLabel className="text-black font-medium text-sm">
+//                           Email Address
+//                         </FormLabel>
+//                         <FormControl>
+//                           <div className="relative">
+//                             <CiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+//                             <Input
+//                               {...field}
+//                               type="email"
+//                               placeholder="Enter your email"
+//                               className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+//                             />
+//                           </div>
+//                         </FormControl>
+//                         <FormMessage />
+//                       </FormItem>
+//                     );
+//                   }}
+//                 />
 
-//               {/* Forgot Password Link */}
-//               <div className="text-right">
-//                 <button
-//                   type="button"
-//                   onClick={goToForgotPassword}
-//                   className="text-amber-600 hover:text-amber-700 text-sm font-medium transition-colors"
-//                 >
-//                   Forgot Password?
-//                 </button>
+//                 {/* Password Field */}
+//                 <FormField
+//                   control={signInForm.control}
+//                   name="password"
+//                   render={({
+//                     field,
+//                   }: {
+//                     field: ControllerRenderProps<SignInFormData, "password">;
+//                   }) => (
+//                     <FormItem>
+//                       <FormLabel className="text-black font-medium text-sm">
+//                         Password
+//                       </FormLabel>
+//                       <FormControl>
+//                         <div className="relative">
+//                           <MdOutlineLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+//                           <Input
+//                             {...field}
+//                             type={showPassword ? "text" : "password"}
+//                             placeholder="Enter your password"
+//                             className="pl-10 pr-10 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+//                           />
+//                           <button
+//                             type="button"
+//                             onClick={togglePasswordVisibility}
+//                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+//                           >
+//                             {showPassword ? <IoEyeOff /> : <IoEye />}
+//                           </button>
+//                         </div>
+//                       </FormControl>
+//                       <FormMessage />
+//                     </FormItem>
+//                   )}
+//                 />
+
+//                 {/* Forgot Password Link */}
+//                 <div className="text-right">
+//                   <button
+//                     type="button"
+//                     onClick={goToForgotPassword}
+//                     className="text-tan-600 hover:text-tan-700 text-sm font-medium transition-colors"
+//                   >
+//                     Forgot Password?
+//                   </button>
+//                 </div>
 //               </div>
 
 //               {/* Sign In Button */}
 //               <Button
-//                 type="button"
-//                 onClick={signInForm.handleSubmit(onSignInSubmit)}
+//                 type="submit"
 //                 disabled={isLoading}
-//                 className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+//                 onClick={signInForm.handleSubmit(handleSignIn)}
+//                 className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
 //               >
 //                 {isLoading ? (
 //                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
 //                 ) : (
-//                   <>
-//                     Sign In
-//                     <ArrowRight className="w-4 h-4" />
-//                   </>
+//                   <>Sign In</>
 //                 )}
 //               </Button>
 //             </div>
@@ -327,9 +332,12 @@
 //           <div className="text-center pt-4 border-t border-gray-100">
 //             <p className="text-gray-600 text-sm">
 //               Don't have an account?{" "}
-//               <button className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
+//               <Button
+//                 variant={"none"}
+//                 className="text-tan-600 hover:text-tan-700 font-medium transition-colors"
+//               >
 //                 Sign Up
-//               </button>
+//               </Button>
 //             </p>
 //           </div>
 //         </div>
@@ -337,330 +345,663 @@
 //     </div>
 //   );
 // }
-import React, { useState } from "react";
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
 
-// Motorcycle icon component (since we can't import FaMotorcycle)
-const MotorcycleIcon = () => (
-  <svg className="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M5 18c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0-3c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm14.5 3c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0-3c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zM12 4.5c0-1.11-.89-2-2-2s-2 .89-2 2 .89 2 2 2 2-.89 2-2zM21 14h-3.5l-1.19-3.83C16.07 9.47 15.38 9 14.58 9H12.5c-.37 0-.72.1-1.03.26l-1.88.94c-.39.2-.59.63-.59 1.08 0 .83.94 1.28 1.56.72L12 10.5h2l1.5 4.84c.04.17.01.34-.08.49-.13.22-.35.17-.35.17H9.5C8.57 16 8 16.58 8 17.5S8.57 19 9.5 19H21c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1z"/>
-  </svg>
-);
+"use client";
+
+import React, { useState } from "react";
+import { useForm, ControllerRenderProps } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { AiOutlineArrowRight } from "react-icons/ai";
+import { RiMotorbikeFill } from "react-icons/ri";
+import { IoEye, IoEyeOff } from "react-icons/io5";
+import { CiMail } from "react-icons/ci";
+import { MdOutlineLock, MdOutlineVerifiedUser } from "react-icons/md";
+
+// Validation schemas
+const signInSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+const forgotPasswordSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
+
+const resetPasswordSchema = z
+  .object({
+    newPassword: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+type SignInFormData = z.infer<typeof signInSchema>;
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [forgotEmail, setForgotEmail] = useState("");
-  type Errors = {
-    email?: string;
-    password?: string;
-    forgotEmail?: string;
-  };
-  const [errors, setErrors] = useState<Errors>({});
+  const [showOtpVerification, setShowOtpVerification] = useState(false);
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otpError, setOtpError] = useState("");
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+  const signInForm = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-  const handleSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const newErrors: Errors = {};
+  const forgotPasswordForm = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
 
-    if (!email) {
-      newErrors.email = "Email is required";
-    } else if (!validateEmail(email)) {
-      newErrors.email = "Please enter a valid email address";
-    }
+  const resetPasswordForm = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
 
-    if (!password) {
-      newErrors.password = "Password is required";
-    } else if (password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      setIsLoading(true);
-      try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        console.log("Sign in data:", { email, password });
-        // Add your sign in logic here
-      } catch (error) {
-        console.error("Sign in error:", error);
-      } finally {
-        setIsLoading(false);
-      }
+  const handleSignIn = async (data: SignInFormData) => {
+    setIsLoading(true);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      console.log("Sign in data:", data);
+      // Add your sign in logic here
+    } catch (error) {
+      console.error("Sign in error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleForgotPassword = async () => {
-    const newErrors: Errors = {};
+  const handleForgotPassword = async (data: ForgotPasswordFormData) => {
+    setIsLoading(true);
+    try {
+      // Simulate API call to send OTP
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("OTP sent to:", data.email);
+      setUserEmail(data.email);
+      setShowOtpVerification(true);
+    } catch (error) {
+      console.error("OTP send error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    if (!forgotEmail) {
-      newErrors.forgotEmail = "Email is required";
-    } else if (!validateEmail(forgotEmail)) {
-      newErrors.forgotEmail = "Please enter a valid email address";
+  const handleOtpVerification = async () => {
+    const otpCode = otp.join("");
+    if (otpCode.length !== 6) {
+      setOtpError("Please enter all 6 digits");
+      return;
     }
 
-    setErrors(newErrors);
+    setIsVerifyingOtp(true);
+    setOtpError("");
 
-    if (Object.keys(newErrors).length === 0) {
-      setIsLoading(true);
-      try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        console.log("Password reset sent to:", forgotEmail);
-        setResetSent(true);
-      } catch (error) {
-        console.error("Password reset error:", error);
-      } finally {
-        setIsLoading(false);
-      }
+    try {
+      // Simulate OTP verification API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("OTP verified:", otpCode);
+
+      // On successful verification, show reset password form
+      setShowOtpVerification(false);
+      setShowResetPassword(true);
+    } catch (error) {
+      setOtpError("Invalid OTP. Please try again.");
+      console.error("OTP verification error:", error);
+    } finally {
+      setIsVerifyingOtp(false);
     }
+  };
+
+  const handleResetPassword = async (data: ResetPasswordFormData) => {
+    setIsLoading(true);
+    try {
+      // Simulate password reset API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("Password reset successful for:", userEmail);
+
+      // Reset all states and go back to sign in
+      resetAllStates();
+    } catch (error) {
+      console.error("Password reset error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setIsLoading(true);
+    try {
+      // Simulate resend OTP API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("OTP resent to:", userEmail);
+      setOtpError("");
+      setOtp(["", "", "", "", "", ""]);
+    } catch (error) {
+      setOtpError("Failed to resend OTP. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resetAllStates = () => {
+    setShowForgotPassword(false);
+    setShowOtpVerification(false);
+    setShowResetPassword(false);
+    setOtp(["", "", "", "", "", ""]);
+    setOtpError("");
+    setUserEmail("");
+    forgotPasswordForm.reset();
+    resetPasswordForm.reset();
   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   const goBackToSignIn = () => {
-    setShowForgotPassword(false);
-    setResetSent(false);
-    setForgotEmail("");
-    setErrors({});
+    resetAllStates();
+    signInForm.clearErrors();
   };
 
   const goToForgotPassword = () => {
     setShowForgotPassword(true);
-    setErrors({});
+    signInForm.clearErrors();
   };
 
-  if (showForgotPassword) {
+  const goBackToEmail = () => {
+    setShowOtpVerification(false);
+    setOtp(["", "", "", "", "", ""]);
+    setOtpError("");
+  };
+
+  // OTP Verification Screen
+  if (showOtpVerification) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#AC9456] via-[#C4A659] to-[#D4B76A] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#141414] via-gray-800 to-[#141414] flex items-center justify-center p-4">
         <div className="w-full max-w-sm mx-auto">
           <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6 backdrop-blur-lg border border-white/20">
             {/* Header */}
             <div className="text-center space-y-4">
               <div className="flex justify-center">
-                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#AC9456] to-[#9B8449] rounded-xl shadow-lg">
-                  <Lock className="w-8 h-8 text-white" />
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-tan-600 to-tan-700 rounded-xl shadow-lg text-white">
+                  <MdOutlineVerifiedUser className="w-8 h-8" />
                 </div>
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                {resetSent ? "Check Your Email" : "Forgot Password?"}
-              </h1>
+              <h1 className="text-2xl font-bold text-black">Verify OTP</h1>
               <p className="text-gray-600 text-sm leading-relaxed">
-                {resetSent
-                  ? "We've sent a password reset link to your email address."
-                  : "Enter your email address and we'll send you a link to reset your password."}
+                Enter the 6-digit verification code sent to your email address.
               </p>
             </div>
 
-            {resetSent ? (
-              <div className="space-y-6">
-                <div className="p-4 bg-gradient-to-r from-[#AC9456]/10 to-[#D4B76A]/10 border border-[#AC9456]/20 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <Mail className="h-5 w-5 text-[#AC9456]" />
-                    <div>
-                      <p className="text-sm text-gray-700">
-                        Password reset link sent to
-                      </p>
-                      <p className="font-semibold text-[#9B8449]">{forgotEmail}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={goBackToSignIn}
-                  className="w-full bg-gradient-to-r from-[#AC9456] to-[#9B8449] hover:from-[#9B8449] hover:to-[#AC9456] text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
-                >
-                  Back to Sign In
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-gray-700 font-medium text-sm">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <div className="space-y-6">
+              {/* OTP Input */}
+              <div className="space-y-2">
+                <label className="text-black font-medium text-sm">
+                  Verification Code
+                </label>
+                <div className="flex gap-2 justify-center">
+                  {otp.map((digit, index) => (
                     <input
-                      type="email"
-                      placeholder="Enter your email"
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
-                      className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 ${
-                        errors.forgotEmail
-                          ? "border-red-300 focus:border-red-500"
-                          : "border-gray-200 focus:border-[#AC9456]"
-                      } transition-colors outline-none`}
-                    />
-                  </div>
-                  {errors.forgotEmail && (
-                    <p className="text-red-500 text-sm">{errors.forgotEmail}</p>
-                  )}
-                </div>
+                      key={index}
+                      type="text"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => {
+                        const newOtp = [...otp];
+                        newOtp[index] = e.target.value;
+                        setOtp(newOtp);
 
-                <div className="space-y-3">
-                  <button
-                    type="button"
-                    onClick={async (e) => {
-                      e.preventDefault();
-                      await handleForgotPassword();
-                    }}
-                    disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-[#AC9456] to-[#9B8449] hover:from-[#9B8449] hover:to-[#AC9456] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-                  >
-                    {isLoading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      <>
-                        Send Reset Link
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={goBackToSignIn}
-                    className="w-full text-[#AC9456] hover:text-[#9B8449] hover:bg-[#AC9456]/5 py-2 rounded-xl font-medium transition-colors"
-                  >
-                    Back to Sign In
-                  </button>
+                        // Auto-focus next input
+                        if (e.target.value && index < 5) {
+                          const nextInput = document.querySelector(
+                            `input[data-index="${index + 1}"]`
+                          ) as HTMLInputElement | null;
+                          nextInput?.focus();
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        // Handle backspace
+                        if (e.key === "Backspace" && !otp[index] && index > 0) {
+                          const prevInput = document.querySelector(
+                            `input[data-index="${index - 1}"]`
+                          ) as HTMLInputElement | null;
+                          prevInput?.focus();
+                        }
+                      }}
+                      data-index={index}
+                      className="w-12 h-12 text-center text-lg font-semibold border-2 border-gray-200 rounded-xl focus:border-tan-500 focus:outline-none transition-colors"
+                    />
+                  ))}
                 </div>
+                {otpError && (
+                  <p className="text-red-500 text-sm text-center">{otpError}</p>
+                )}
               </div>
-            )}
+
+              {/* Resend OTP */}
+              <div className="text-center">
+                <p className="text-gray-600 text-sm">
+                  Didn't receive the code?{" "}
+                  <button
+                    onClick={handleResendOtp}
+                    disabled={isLoading}
+                    className="text-tan-600 hover:text-tan-700 font-medium disabled:opacity-50"
+                  >
+                    Resend OTP
+                  </button>
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <Button
+                  onClick={handleOtpVerification}
+                  disabled={isVerifyingOtp || otp.some((digit) => !digit)}
+                  className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                >
+                  {isVerifyingOtp ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      Verify OTP
+                      <AiOutlineArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={goBackToEmail}
+                  className="w-full text-tan-600 hover:text-tan-700 hover:bg-tan-50 py-2 rounded-xl font-medium transition-colors"
+                >
+                  Back to Email
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
+  // Reset Password Screen
+  if (showResetPassword) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#141414] via-gray-800 to-[#141414] flex items-center justify-center p-4">
+        <div className="w-full max-w-sm mx-auto">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6 backdrop-blur-lg border border-white/20">
+            {/* Header */}
+            <div className="text-center space-y-4">
+              <div className="flex justify-center">
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-tan-600 to-tan-700 rounded-xl shadow-lg text-white">
+                  <MdOutlineLock className="w-8 h-8" />
+                </div>
+              </div>
+              <h1 className="text-2xl font-bold text-black">Reset Password</h1>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Enter your new password to complete the reset process.
+              </p>
+            </div>
+
+            <Form {...resetPasswordForm}>
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  {/* New Password Field */}
+                  <FormField
+                    control={resetPasswordForm.control}
+                    name="newPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-black font-medium text-sm">
+                          New Password
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <MdOutlineLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <Input
+                              {...field}
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Enter new password"
+                              className="pl-10 pr-10 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={togglePasswordVisibility}
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                              {showPassword ? <IoEyeOff /> : <IoEye />}
+                            </button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Confirm Password Field */}
+                  <FormField
+                    control={resetPasswordForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-black font-medium text-sm">
+                          Confirm Password
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <MdOutlineLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <Input
+                              {...field}
+                              type={showConfirmPassword ? "text" : "password"}
+                              placeholder="Confirm new password"
+                              className="pl-10 pr-10 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={toggleConfirmPasswordVisibility}
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                              {showConfirmPassword ? <IoEyeOff /> : <IoEye />}
+                            </button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    onClick={resetPasswordForm.handleSubmit(
+                      handleResetPassword
+                    )}
+                    className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                  >
+                    {isLoading ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        Reset Password
+                        <AiOutlineArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={goBackToSignIn}
+                    className="w-full text-tan-600 hover:text-tan-700 hover:bg-tan-50 py-2 rounded-xl font-medium transition-colors"
+                  >
+                    Back to Sign In
+                  </Button>
+                </div>
+              </div>
+            </Form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Forgot Password Screen
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#141414] via-gray-800 to-[#141414] flex items-center justify-center p-4">
+        <div className="w-full max-w-sm mx-auto">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6 backdrop-blur-lg border border-white/20">
+            {/* Header */}
+            <div className="text-center space-y-4">
+              <div className="flex justify-center">
+                <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-tan-600 to-tan-700 rounded-xl shadow-lg text-white">
+                  <MdOutlineLock className="w-8 h-8" />
+                </div>
+              </div>
+              <h1 className="text-2xl font-bold text-black">
+                Forgot Password?
+              </h1>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Enter your email address and we'll send you a verification code
+                to reset your password.
+              </p>
+            </div>
+
+            <Form {...forgotPasswordForm}>
+              <div className="space-y-6">
+                <FormField
+                  control={forgotPasswordForm.control}
+                  name="email"
+                  render={({
+                    field,
+                  }: {
+                    field: ControllerRenderProps<
+                      ForgotPasswordFormData,
+                      "email"
+                    >;
+                  }) => (
+                    <FormItem>
+                      <FormLabel className="text-black font-medium text-sm">
+                        Email Address
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <CiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                          <Input
+                            {...field}
+                            type="email"
+                            placeholder="Enter your email"
+                            className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="space-y-3">
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    onClick={forgotPasswordForm.handleSubmit(
+                      handleForgotPassword
+                    )}
+                    className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                  >
+                    {isLoading ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        Send Verification Code
+                        <AiOutlineArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={goBackToSignIn}
+                    className="w-full text-tan-600 hover:text-tan-700 hover:bg-tan-50 py-2 rounded-xl font-medium transition-colors"
+                  >
+                    Back to Sign In
+                  </Button>
+                </div>
+              </div>
+            </Form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main Sign In Screen
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#AC9456] via-[#C4A659] to-[#D4B76A] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#141414] via-gray-800 to-[#141414] flex items-center justify-center p-4">
       <div className="w-full max-w-sm mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6 backdrop-blur-lg border border-white/20">
           {/* Header */}
           <div className="text-center space-y-4">
             <div className="flex justify-center">
-              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#AC9456] to-[#9B8449] rounded-xl shadow-lg">
-                <MotorcycleIcon />
+              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-tan-600 to-tan-700 rounded-xl shadow-lg text-white">
+                <RiMotorbikeFill />
               </div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
+            <h1 className="text-2xl font-bold text-black">Welcome Back</h1>
             <p className="text-gray-600 text-sm">
               Sign in to your BikeRent account
             </p>
           </div>
 
           {/* Sign In Form */}
-          <div className="space-y-6">
-            <div className="space-y-4">
-              {/* Email Field */}
-              <div className="space-y-2">
-                <label className="text-gray-700 font-medium text-sm">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 ${
-                      errors.email
-                        ? "border-red-300 focus:border-red-500"
-                        : "border-gray-200 focus:border-[#AC9456]"
-                    } transition-colors outline-none`}
-                  />
-                </div>
-                {errors.email && (
-                  <p className="text-red-500 text-sm">{errors.email}</p>
-                )}
-              </div>
+          <Form {...signInForm}>
+            <div className="space-y-6">
+              <div className="space-y-4">
+                {/* Email Field */}
+                <FormField
+                  control={signInForm.control}
+                  name="email"
+                  render={({
+                    field,
+                  }: {
+                    field: ControllerRenderProps<SignInFormData, "email">;
+                  }): React.JSX.Element => {
+                    return (
+                      <FormItem>
+                        <FormLabel className="text-black font-medium text-sm">
+                          Email Address
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <CiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <Input
+                              {...field}
+                              type="email"
+                              placeholder="Enter your email"
+                              className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
 
-              {/* Password Field */}
-              <div className="space-y-2">
-                <label className="text-gray-700 font-medium text-sm">
-                  Password
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={`w-full pl-10 pr-10 py-3 rounded-xl border-2 ${
-                      errors.password
-                        ? "border-red-300 focus:border-red-500"
-                        : "border-gray-200 focus:border-[#AC9456]"
-                    } transition-colors outline-none`}
-                  />
+                {/* Password Field */}
+                <FormField
+                  control={signInForm.control}
+                  name="password"
+                  render={({
+                    field,
+                  }: {
+                    field: ControllerRenderProps<SignInFormData, "password">;
+                  }) => (
+                    <FormItem>
+                      <FormLabel className="text-black font-medium text-sm">
+                        Password
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <MdOutlineLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                          <Input
+                            {...field}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter your password"
+                            className="pl-10 pr-10 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={togglePasswordVisibility}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                          >
+                            {showPassword ? <IoEyeOff /> : <IoEye />}
+                          </button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Forgot Password Link */}
+                <div className="text-right">
                   <button
                     type="button"
-                    onClick={togglePasswordVisibility}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={goToForgotPassword}
+                    className="text-tan-600 hover:text-tan-700 text-sm font-medium transition-colors"
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
+                    Forgot Password?
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="text-red-500 text-sm">{errors.password}</p>
+              </div>
+
+              {/* Sign In Button */}
+              <Button
+                type="submit"
+                disabled={isLoading}
+                onClick={signInForm.handleSubmit(handleSignIn)}
+                className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>Sign In</>
                 )}
-              </div>
-
-              {/* Forgot Password Link */}
-              <div className="text-right">
-                <button
-                  type="button"
-                  onClick={goToForgotPassword}
-                  className="text-[#AC9456] hover:text-[#9B8449] text-sm font-medium transition-colors"
-                >
-                  Forgot Password?
-                </button>
-              </div>
+              </Button>
             </div>
-
-            {/* Sign In Button */}
-            <button
-              type="button"
-              onClick={handleSignIn}
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-[#AC9456] to-[#9B8449] hover:from-[#9B8449] hover:to-[#AC9456] disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-            >
-              {isLoading ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <>
-                  Sign In
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </div>
+          </Form>
 
           {/* Footer */}
           <div className="text-center pt-4 border-t border-gray-100">
             <p className="text-gray-600 text-sm">
               Don't have an account?{" "}
-              <button className="text-[#AC9456] hover:text-[#9B8449] font-medium transition-colors">
+              <Button
+                variant={"none"}
+                className="text-tan-600 hover:text-tan-700 font-medium transition-colors"
+              >
                 Sign Up
-              </button>
+              </Button>
             </p>
           </div>
         </div>

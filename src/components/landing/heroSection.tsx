@@ -1,10 +1,10 @@
 // components/HeroSection.tsx
-import React from 'react';
+import React from "react";
 import Image from "next/image";
 
 const HeroSection = () => {
   return (
-    <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen flex items-center pt-10 sm:pt-10 lg:pt-0">
+    <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen flex items-center pt-10 sm:pt-10 lg:pt-0 lg:px-10">
       <div className="absolute inset-0 bg-black/40"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-0 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center lg:mb-15">
@@ -15,11 +15,11 @@ const HeroSection = () => {
                 <span className="block text-[#AC9456]">Bike Today</span>
               </h1>
               <p className="text-xl text-gray-300 leading-relaxed max-w-lg text-justify md:text-left">
-                Experience the freedom of the road with premium bike rentals across Tamil Nadu.
-                Safe, affordable, and always available.
+                Experience the freedom of the road with premium bike rentals
+                across Tamil Nadu. Safe, affordable, and always available.
               </p>
             </div>
-            
+
             <div className="flex items-center justify-center sm:justify-start space-x-8">
               <div className="text-center">
                 <div className="text-3xl font-bold text-[#AC9456]">1000+</div>
@@ -35,7 +35,7 @@ const HeroSection = () => {
               </div>
             </div>
           </div>
-         
+
           <div className="relative mb-25 sm:mb-0 mt-8 sm:mt-10 lg:mt-0">
             <div className="relative z-10">
               <Image
@@ -43,7 +43,7 @@ const HeroSection = () => {
                 alt="Premium Motorcycle"
                 width={800}
                 height={600}
-                className="rounded-xl"
+                className="rounded-xl "
                 quality={85}
                 priority={true}
                 placeholder="blur"
