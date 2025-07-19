@@ -31,7 +31,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* Landing page */}
-        <Header variant="landing" />
+        <Header variant="home" isLoggedIn={true} />
 
         {/* Home page - not logged in */}
         {/* <Header variant="home" isLoggedIn={false} /> */}
