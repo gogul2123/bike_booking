@@ -349,9 +349,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm, ControllerRenderProps } from "react-hook-form";
+import { useForm, type ControllerRenderProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -688,7 +689,11 @@ export default function LoginPage() {
                   <FormField
                     control={resetPasswordForm.control}
                     name="newPassword"
-                    render={({ field }) => (
+                    render={({
+                      field,
+                    }: {
+                      field: ControllerRenderProps<ResetPasswordFormData, "newPassword">;
+                    }) => (
                       <FormItem>
                         <FormLabel className="text-black font-medium text-sm">
                           New Password
@@ -720,7 +725,11 @@ export default function LoginPage() {
                   <FormField
                     control={resetPasswordForm.control}
                     name="confirmPassword"
-                    render={({ field }) => (
+                    render={({
+                      field,
+                    }: {
+                      field: ControllerRenderProps<ResetPasswordFormData, "confirmPassword">;
+                    }) => (
                       <FormItem>
                         <FormLabel className="text-black font-medium text-sm">
                           Confirm Password
