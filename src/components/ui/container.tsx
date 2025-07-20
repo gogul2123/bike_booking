@@ -1,7 +1,15 @@
 import React from "react";
 
-function Container({ children }: { children: React.ReactNode }) {
-  return <div className="p-4 min-h-screen bg-white">{children}</div>;
+function Container({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`p-4 min-h-screen bg-white ${className}`}>{children}</div>
+  );
 }
 
 export default Container;

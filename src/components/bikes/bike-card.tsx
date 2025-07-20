@@ -26,7 +26,7 @@ const BikeCard: React.FC<BikeCardProps> = ({ bike, index }) => {
   return (
     <div
       key={bike._id || index}
-      className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 relative"
+      className=" sm:min-h-[500px] md:min-h-[500px] lg:min-h-0 group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 relative"
     >
       <div className="relative h-56 overflow-hidden">
         <img

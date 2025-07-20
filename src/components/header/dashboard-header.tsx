@@ -52,7 +52,7 @@ export default function HomeHeader({ isLoggedIn = false }) {
   return (
     <>
       <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100">
-        <div className="container mx-auto px-2 sm:px-6 lg:px-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-6 xl:px-8">
           <div className="flex items-center justify-between h-18">
             <div className="flex items-center space-x-2 md:space-x-6">
               {/* Mobile Menu Button */}

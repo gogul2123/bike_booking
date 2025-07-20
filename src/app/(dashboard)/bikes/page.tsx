@@ -21,6 +21,15 @@ import {
 import BikeCard from "@/components/bikes/bike-card";
 import Container from "@/components/ui/container";
 import PageTitle from "@/components/ui/page-title";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import BikeFilterPanel from "@/components/bikes/filter";
 
 // Sample data (you can replace this with your import)
 const bikesData = [
@@ -289,200 +298,19 @@ const BikeListingPage = () => {
       />
 
       <div className="lg:max-w-[80vw] 2xl:max-w-7xl mx-auto px-4 lg:px-2 py-8 lg:py-4">
-        {/* Filter Toggle & Results Count */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center space-x-2 border-tan-600 text-tan-600 hover:bg-tan-50"
-            >
-              <Filter className="w-4 h-4" />
-              <span>Filters</span>
-              {showFilters ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </Button>
-
-            <div className="text-gray-600">
-              <span className="font-semibold text-tan-600">
-                {filteredBikes.length}
-              </span>{" "}
-              bikes found
-            </div>
-          </div>
-
-          {(filters.selectedTypes.length > 0 ||
-            filters.selectedCategories.length > 0 ||
-            filters.selectedBrands.length > 0 ||
-            filters.availability !== "all") && (
-            <Button
-              variant="ghost"
-              onClick={clearAllFilters}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              <X className="w-4 h-4 mr-2" />
-              Clear All
-            </Button>
-          )}
-        </div>
-
-        {/* Filters Panel */}
-        {showFilters && (
-          <div className="bg-gray-50 rounded-lg p-6 mb-8 border animate-in slide-in-from-top duration-300">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Price Range */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Price Range (₹/day)
-                </label>
-                <div className="px-2">
-                  <Slider
-                    value={filters.priceRange}
-                    onValueChange={(value) =>
-                      setFilters((prev) => ({ ...prev, priceRange: value }))
-                    }
-                    max={3500}
-                    min={500}
-                    step={50}
-                    className="mb-3"
-                  />
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>₹{filters.priceRange[0]}</span>
-                    <span>₹{filters.priceRange[1]}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Ride Type */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Ride Experience
-                </label>
-                <div className="space-y-2">
-                  {uniqueTypes.map((type) => (
-                    <div key={type} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={type}
-                        checked={filters.selectedTypes.includes(type)}
-                        onCheckedChange={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            selectedTypes: prev.selectedTypes.includes(type)
-                              ? prev.selectedTypes.filter(
-                                  (item) => item !== type
-                                )
-                              : [...prev.selectedTypes, type],
-                          }))
-                        }
-                      />
-                      <label
-                        htmlFor={type}
-                        className="text-sm text-gray-700 capitalize flex items-center space-x-1 cursor-pointer"
-                      >
-                        {getTypeIcon(type)}
-                        <span>{type.replace("-", " ")}</span>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Category */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-3">
-                  Vehicle Category
-                </label>
-                <div className="space-y-2">
-                  {uniqueCategories.map((category) => (
-                    <div key={category} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={category}
-                        checked={filters.selectedCategories.includes(category)}
-                        onCheckedChange={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            selectedCategories:
-                              prev.selectedCategories.includes(category)
-                                ? prev.selectedCategories.filter(
-                                    (item) => item !== category
-                                  )
-                                : [...prev.selectedCategories, category],
-                          }))
-                        }
-                      />
-                      <label
-                        htmlFor={category}
-                        className="text-sm text-gray-700 capitalize cursor-pointer"
-                      >
-                        {category}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Brand & Availability */}
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Brand
-                  </label>
-                  <div className="space-y-2">
-                    {uniqueBrands.map((brand) => (
-                      <div key={brand} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={brand}
-                          checked={filters.selectedBrands.includes(brand)}
-                          onCheckedChange={() =>
-                            setFilters((prev) => ({
-                              ...prev,
-                              selectedBrands: prev.selectedBrands.includes(
-                                brand
-                              )
-                                ? prev.selectedBrands.filter(
-                                    (item) => item !== brand
-                                  )
-                                : [...prev.selectedBrands, brand],
-                            }))
-                          }
-                        />
-                        <label
-                          htmlFor={brand}
-                          className="text-sm text-gray-700 cursor-pointer"
-                        >
-                          {brand}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Availability
-                  </label>
-                  <select
-                    value={filters.availability}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        availability: e.target.value,
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-tan-500"
-                  >
-                    <option value="all">All Bikes</option>
-                    <option value="available">Available Now</option>
-                    <option value="booked">Currently Booked</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Filter Toggle & filter panel */}
+        <BikeFilterPanel
+          showFilters={showFilters}
+          setShowFilters={setShowFilters}
+          filters={filters}
+          setFilters={setFilters}
+          filteredBikes={filteredBikes}
+          clearAllFilters={clearAllFilters}
+          uniqueTypes={uniqueTypes}
+          uniqueCategories={uniqueCategories}
+          uniqueBrands={uniqueBrands}
+          getTypeIcon={getTypeIcon}
+        />
 
         {/* Bikes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
