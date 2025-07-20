@@ -349,9 +349,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm, ControllerRenderProps } from "react-hook-form";
+import { useForm, type ControllerRenderProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -395,6 +396,7 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
 export default function LoginPage() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -687,7 +689,11 @@ export default function LoginPage() {
                   <FormField
                     control={resetPasswordForm.control}
                     name="newPassword"
-                    render={({ field }) => (
+                    render={({
+                      field,
+                    }: {
+                      field: ControllerRenderProps<ResetPasswordFormData, "newPassword">;
+                    }) => (
                       <FormItem>
                         <FormLabel className="text-black font-medium text-sm">
                           New Password
@@ -719,7 +725,11 @@ export default function LoginPage() {
                   <FormField
                     control={resetPasswordForm.control}
                     name="confirmPassword"
-                    render={({ field }) => (
+                    render={({
+                      field,
+                    }: {
+                      field: ControllerRenderProps<ResetPasswordFormData, "confirmPassword">;
+                    }) => (
                       <FormItem>
                         <FormLabel className="text-black font-medium text-sm">
                           Confirm Password
@@ -850,7 +860,7 @@ export default function LoginPage() {
                     className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                   >
                     {isLoading ? (
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
                         Send Verification Code
@@ -993,8 +1003,8 @@ export default function LoginPage() {
           </Form>
 
           {/* Footer */}
-          <div className="text-center pt-4 border-t border-gray-100">
-            <p className="text-gray-600 text-sm">
+          <div className="text-center pt-4 border-t">
+            <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
               <Button
                 variant={"none"}

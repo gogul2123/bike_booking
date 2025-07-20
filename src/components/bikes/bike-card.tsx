@@ -1,7 +1,9 @@
-import React from "react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock } from "lucide-react";
+import BookingModal from "./bike-model";
+import { useCart } from "@/context/CartContext";
 
 type Bike = {
   _id: string;
@@ -20,10 +22,46 @@ type Bike = {
 type BikeCardProps = {
   bike: Bike;
   index?: number;
+  onAddToCart?: (bike: Bike, days: number, selectedColor: string) => void;
+  onBookNow?: (bike: Bike, days: number, selectedColor: string) => void;
 };
 
-const BikeCard: React.FC<BikeCardProps> = ({ bike, index }) => {
+const BikeCard: React.FC<BikeCardProps> = ({
+  bike, 
+  index, 
+  onAddToCart = () => {}, 
+  onBookNow = () => {}
+  }) => {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { addToCart } = useCart();
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  const handleBookNowClick = () => {
+    if (bike.availability) {
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleAddToCart = (bike: Bike, days: number, selectedColor: string) => {
+    addToCart({ ...bike, days, selectedColor, quantity: 1 });
+    console.log('Added to cart:', { bike: bike.brand + ' ' + bike.model, days, selectedColor });
+  };
+
+  const handleBookNow = (bike: Bike, days: number, selectedColor: string) => {
+    onBookNow(bike, days, selectedColor);
+    console.log('Booked:', { bike: bike.brand + ' ' + bike.model, days, selectedColor });
+  };
+
   return (
+    <>
     <div
       key={bike._id || index}
       className=" sm:min-h-[500px] md:min-h-[500px] lg:min-h-0 group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border border-gray-100 relative"
@@ -96,6 +134,7 @@ const BikeCard: React.FC<BikeCardProps> = ({ bike, index }) => {
         </div>
 
         <Button
+          onClick={handleBookNowClick}
           className="w-full py-6 font-semibold text-md bg-tan-600 hover:bg-tan-700 text-white group/btn"
           disabled={!bike.availability}
         >
@@ -123,7 +162,18 @@ const BikeCard: React.FC<BikeCardProps> = ({ bike, index }) => {
       </div>
 
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-tan-600 to-tan-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+       
     </div>
+    {/* Booking Modal */}
+        <BookingModal
+          bike={bike}
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          onAddToCart={handleAddToCart}
+          onBookNow={handleBookNow}
+        />
+    </>
+
   );
 };
 

@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import sampleImage from "../../../../public/bikeImg/landing/Royal_Enfield_Himalayan.jpg";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Filter,
   X,
@@ -196,6 +197,7 @@ const bikesData = [
 ];
 
 const BikeListingPage = () => {
+  const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     priceRange: [500, 3500],
@@ -336,6 +338,8 @@ const BikeListingPage = () => {
           </div>
         )}
       </div>
+
+      <button onClick={() => router.push("/cart")}>cart</button>
     </Container>
   );
 };
