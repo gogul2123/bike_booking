@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -13,13 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
@@ -32,84 +24,56 @@ import {
 } from "@/components/ui/form";
 import {
   Bike,
-  User,
   Mail,
   Phone,
   User2,
   Shield,
   CheckCircle,
+  ArrowLeft,
+  Clock,
+  UserCheck,
 } from "lucide-react";
 
 // Define the form schemas with Zod
-const signupSchema = z.object({
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
+const phoneSchema = z.object({
   phone: z
     .string({ required_error: "Phone number is required" })
     .min(10, "Phone number must be at least 10 digits")
     .regex(/^\d+$/, "Phone number should contain only numbers"),
-  termsAccepted: z
-    .boolean()
-    .refine((val) => val === true, "You must accept the terms and conditions"),
 });
 
 const otpSchema = z.object({
   otp: z.string().min(6, "OTP must be 6 digits").max(6, "OTP must be 6 digits"),
 });
 
-// Define the form fields array
-type SignupFieldName = "fullName" | "email" | "phone";
+const signupSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  termsAccepted: z
+    .boolean()
+    .refine((val) => val === true, "You must accept the terms and conditions"),
+});
 
-type FormFieldConfig = {
-  label: string;
-  name: SignupFieldName;
-  type: string;
-  placeholder: string;
-  icon: React.ElementType;
-};
-
-const formFields: FormFieldConfig[] = [
-  {
-    label: "Full Name",
-    name: "fullName",
-    type: "text",
-    placeholder: "Enter your full name",
-    icon: User2,
-  },
-  {
-    label: "Email",
-    name: "email",
-    type: "email",
-    placeholder: "Enter your email address",
-    icon: Mail,
-  },
-  {
-    label: "Phone",
-    name: "phone",
-    type: "tel",
-    placeholder: "Enter your phone number",
-    icon: Phone,
-  },
-];
-
-type SignupFormData = z.infer<typeof signupSchema>;
+type PhoneFormData = z.infer<typeof phoneSchema>;
 type OtpFormData = z.infer<typeof otpSchema>;
+type SignupFormData = z.infer<typeof signupSchema>;
+
+type RegistrationStatus = "INITIATED" | "COMPLETED";
+type CurrentStep = "phone" | "otp" | "registration" | "dashboard" | "success";
 
 const BikeRentalSignup: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState<"signup" | "otp" | "success">(
-    "signup"
-  );
+  const [currentStep, setCurrentStep] = useState<CurrentStep>("phone");
   const [isLoading, setIsLoading] = useState(false);
-  const [userEmail, setUserEmail] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+  const [registrationStatus, setRegistrationStatus] =
+    useState<RegistrationStatus | null>(null);
   const [resendTimer, setResendTimer] = useState(0);
+  const [userName, setUserName] = useState("");
 
-  const signupForm = useForm<SignupFormData>({
-    resolver: zodResolver(signupSchema),
+  const phoneForm = useForm<PhoneFormData>({
+    resolver: zodResolver(phoneSchema),
     defaultValues: {
-      fullName: "",
-      email: "",
       phone: "",
-      termsAccepted: false,
     },
   });
 
@@ -120,14 +84,20 @@ const BikeRentalSignup: React.FC = () => {
     },
   });
 
+  const signupForm = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      termsAccepted: false,
+    },
+  });
+
   // Simulate OTP sending
-  const sendOTP = async (email: string) => {
-    // In real app, this would call your API to send OTP
-    console.log(`Sending OTP to ${email}`);
-    // Simulate API delay
+  const sendOTP = async (phone: string) => {
+    console.log(`Sending OTP to ${phone}`);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Start resend timer
     setResendTimer(60);
     const timer = setInterval(() => {
       setResendTimer((prev) => {
@@ -140,22 +110,15 @@ const BikeRentalSignup: React.FC = () => {
     }, 1000);
   };
 
-  const handleSignupSubmit = async (data: SignupFormData) => {
+  const handlePhoneSubmit = async (data: PhoneFormData) => {
     setIsLoading(true);
     try {
-      // Simulate API call for signup
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Store email for OTP verification
-      setUserEmail(data.email);
-
-      // Send OTP
-      await sendOTP(data.email);
-
-      // Move to OTP step
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setUserPhone(data.phone);
+      await sendOTP(data.phone);
       setCurrentStep("otp");
     } catch (error) {
-      console.error("Signup failed:", error);
+      console.error("Phone submission failed:", error);
     } finally {
       setIsLoading(false);
     }
@@ -164,12 +127,27 @@ const BikeRentalSignup: React.FC = () => {
   const handleOtpSubmit = async (data: OtpFormData) => {
     setIsLoading(true);
     try {
-      // Simulate OTP verification
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // In real app, verify OTP with backend
       if (data.otp === "123456") {
-        setCurrentStep("success");
+        // Simulate API call to check registration status
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Simulate random status for demo
+        const isNewUser = Math.random() > 0.5;
+        const status: RegistrationStatus = isNewUser
+          ? "INITIATED"
+          : "COMPLETED";
+
+        setRegistrationStatus(status);
+
+        if (status === "COMPLETED") {
+          // Simulate getting user name for existing user
+          setUserName("John Doe");
+          setCurrentStep("dashboard");
+        } else {
+          setCurrentStep("registration");
+        }
       } else {
         otpForm.setError("otp", { message: "Invalid OTP. Please try again." });
       }
@@ -180,12 +158,25 @@ const BikeRentalSignup: React.FC = () => {
     }
   };
 
+  const handleRegistrationSubmit = async (data: SignupFormData) => {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setUserName(data.fullName);
+      setCurrentStep("success");
+    } catch (error) {
+      console.error("Registration failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleResendOTP = async () => {
     if (resendTimer > 0) return;
 
     setIsLoading(true);
     try {
-      await sendOTP(userEmail);
+      await sendOTP(userPhone);
       otpForm.setValue("otp", "");
     } catch (error) {
       console.error("Resend OTP failed:", error);
@@ -194,103 +185,71 @@ const BikeRentalSignup: React.FC = () => {
     }
   };
 
-  const renderSignupForm = () => (
-    <Form {...signupForm}>
-      <div className="space-y-6">
-        {/* Personal Information Section */}
-        <div className="bg-tan-950/20 p-6 rounded-lg border border-tan-800/30">
-          <h3 className="text-xl font-semibold text-black/60 mb-4 flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Personal Information
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-            {formFields.slice(0, 5).map((field) => (
-              <FormField
-                key={field.name}
-                control={signupForm.control}
-                name={field.name}
-                render={({ field: formField }) => (
-                  <FormItem>
-                    <FormLabel className="text-black/80 font-medium text-sm">
-                      {field.label}
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <Input
-                          {...formField}
-                          value={
-                            typeof formField.value === "string" ||
-                            typeof formField.value === "number" ||
-                            formField.value === undefined
-                              ? formField.value ?? ""
-                              : ""
-                          }
-                          type={field.type}
-                          placeholder={field.placeholder}
-                          className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-red-400" />
-                  </FormItem>
-                )}
-              />
-            ))}
-            <FormField
-              control={signupForm.control}
-              name="termsAccepted"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      className="border-tan-800 data-[state=checked]:bg-tan-400 data-[state=checked]:border-tan-400"
+  const renderPhoneForm = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-black/80 mb-2">
+          Welcome!
+        </h2>
+        <p className="text-sm sm:text-base text-black/60">
+          Enter your phone number to get started
+        </p>
+      </div>
+
+      <Form {...phoneForm}>
+        <div className="bg-tan-950/20 p-4 sm:p-6 rounded-lg border border-tan-800/30">
+          <FormField
+            control={phoneForm.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-black/80 font-medium text-sm">
+                  Phone Number
+                </FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Input
+                      {...field}
+                      type="tel"
+                      placeholder="Enter your phone number"
+                      className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none text-base"
                     />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel className="text-sm font-medium text-black/80">
-                      I accept the terms and conditions *
-                    </FormLabel>
-                    <FormDescription className="text-black/60">
-                      You agree to our Terms of Service and Privacy Policy
-                    </FormDescription>
                   </div>
-                  <FormMessage className="text-red-400" />
-                </FormItem>
-              )}
-            />
-          </div>
+                </FormControl>
+                <FormMessage className="text-red-400" />
+              </FormItem>
+            )}
+          />
         </div>
 
         <Button
           type="submit"
           disabled={isLoading}
-          onClick={signupForm.handleSubmit(handleSignupSubmit)}
+          onClick={phoneForm.handleSubmit(handlePhoneSubmit)}
           className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
         >
-          {isLoading ? "Creating Account..." : "Create Account"}
+          {isLoading ? "Sending OTP..." : "Send OTP"}
         </Button>
-      </div>
-    </Form>
+      </Form>
+    </div>
   );
 
   const renderOtpForm = () => (
-    <Form {...otpForm}>
-      <div className="space-y-6">
-        <div className="bg-tan-950/20 p-6 rounded-lg border border-tan-800/30">
-          <h3 className="text-xl font-semibold text-black/60 mb-4 flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Verify Your Email
-          </h3>
-          <p className="text-black/60 mb-4">
-            We've sent a 6-digit verification code to{" "}
-            <strong>{userEmail}</strong>
-          </p>
-          <p className="text-black/50 text-sm mb-6">
-            Please enter the code to complete your registration. Use{" "}
-            <strong>123456</strong> for demo.
+    <div className="space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-black/80 mb-2">
+          Verify Phone
+        </h2>
+        <p className="text-sm sm:text-base text-black/60 break-all">
+          Enter the OTP sent to {userPhone}
+        </p>
+      </div>
+
+      <Form {...otpForm}>
+        <div className="bg-tan-950/20 p-4 sm:p-6 rounded-lg border border-tan-800/30">
+          <p className="text-black/50 text-xs sm:text-sm mb-6 text-center">
+            Please enter the 6-digit code. Use <strong>123456</strong> for demo.
           </p>
 
           <FormField
@@ -307,7 +266,7 @@ const BikeRentalSignup: React.FC = () => {
                     <Input
                       {...field}
                       type="text"
-                      placeholder="Enter 6-digit code"
+                      placeholder="000000"
                       maxLength={6}
                       className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none text-center text-lg font-mono tracking-widest"
                     />
@@ -318,23 +277,31 @@ const BikeRentalSignup: React.FC = () => {
             )}
           />
 
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-4 gap-2">
             <Button
               type="button"
               variant="ghost"
-              onClick={() => setCurrentStep("signup")}
-              className="text-tan-600 hover:text-tan-700"
+              onClick={() => setCurrentStep("phone")}
+              className="text-tan-600 hover:text-tan-700 flex items-center gap-1 text-sm"
             >
-              ← Back to Signup
+              <ArrowLeft className="w-4 h-4" />
+              Change Phone
             </Button>
             <Button
               type="button"
               variant="ghost"
               onClick={handleResendOTP}
               disabled={resendTimer > 0 || isLoading}
-              className="text-tan-600 hover:text-tan-700"
+              className="text-tan-600 hover:text-tan-700 flex items-center gap-1 text-sm"
             >
-              {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend OTP"}
+              {resendTimer > 0 ? (
+                <>
+                  <Clock className="w-4 h-4" />
+                  Resend in {resendTimer}s
+                </>
+              ) : (
+                "Resend OTP"
+              )}
             </Button>
           </div>
         </div>
@@ -343,34 +310,148 @@ const BikeRentalSignup: React.FC = () => {
           type="submit"
           disabled={isLoading}
           onClick={otpForm.handleSubmit(handleOtpSubmit)}
-          className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+          className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
         >
-          {isLoading ? "Verifying..." : "Verify & Complete Registration"}
+          {isLoading ? "Verifying..." : "Verify OTP"}
+        </Button>
+      </Form>
+    </div>
+  );
+
+  const renderRegistrationForm = () => (
+    <div className="space-y-6">
+      <div className="text-center mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-black/80 mb-2">
+          Complete Profile
+        </h2>
+        <p className="text-sm sm:text-base text-black/60">
+          Just a few more details to get started
+        </p>
+      </div>
+
+      <Form {...signupForm}>
+        <div className="bg-tan-950/20 p-4 sm:p-6 rounded-lg border border-tan-800/30 space-y-4">
+          <FormField
+            control={signupForm.control}
+            name="fullName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-black/80 font-medium text-sm">
+                  Full Name
+                </FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <User2 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="Enter your full name"
+                      className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage className="text-red-400" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={signupForm.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-black/80 font-medium text-sm">
+                  Email Address
+                </FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="Enter your email address"
+                      className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage className="text-red-400" />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={signupForm.control}
+            name="termsAccepted"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="border-tan-800 data-[state=checked]:bg-tan-400 data-[state=checked]:border-tan-400 mt-1"
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel className="text-sm font-medium text-black/80">
+                    I accept the terms and conditions *
+                  </FormLabel>
+                  <FormDescription className="text-black/60 text-xs">
+                    You agree to our Terms of Service and Privacy Policy
+                  </FormDescription>
+                </div>
+                <FormMessage className="text-red-400" />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <Button
+          type="submit"
+          disabled={isLoading}
+          onClick={signupForm.handleSubmit(handleRegistrationSubmit)}
+          className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl"
+        >
+          {isLoading ? "Creating Account..." : "Complete Registration"}
+        </Button>
+      </Form>
+    </div>
+  );
+
+  const renderDashboard = () => (
+    <div className="space-y-6">
+      <div className="bg-blue-50 p-4 sm:p-6 rounded-lg border border-blue-200 text-center">
+        <UserCheck className="h-12 w-12 sm:h-16 sm:w-16 text-blue-600 mx-auto mb-4" />
+        <h3 className="text-lg sm:text-xl font-semibold text-blue-800 mb-2">
+          Welcome back, {userName}!
+        </h3>
+        <p className="text-sm sm:text-base text-blue-700 mb-4">
+          Your account is verified and ready to use. You can start renting bikes
+          right away.
+        </p>
+        <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
+          Go to Dashboard
         </Button>
       </div>
-    </Form>
+    </div>
   );
 
   const renderSuccessScreen = () => (
     <div className="space-y-6">
-      <div className="bg-green-50 p-6 rounded-lg border border-green-200 text-center">
-        <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
-        <h3 className="text-xl font-semibold text-green-800 mb-2">
+      <div className="bg-green-50 p-4 sm:p-6 rounded-lg border border-green-200 text-center">
+        <CheckCircle className="h-12 w-12 sm:h-16 sm:w-16 text-green-600 mx-auto mb-4" />
+        <h3 className="text-lg sm:text-xl font-semibold text-green-800 mb-2">
           Account Created Successfully!
         </h3>
-        <p className="text-green-700 mb-4">
-          Welcome to BikeRental Pro! Your account has been verified and you're
-          ready to start renting bikes.
+        <p className="text-sm sm:text-base text-green-700 mb-4">
+          Welcome to BikeRental Pro, {userName}! Your account has been created
+          and you're ready to start renting bikes.
         </p>
         <Button
           onClick={() => {
-            // Reset forms and go back to signup (or redirect to login/dashboard)
-            setCurrentStep("signup");
-            signupForm.reset();
-            otpForm.reset();
-            setUserEmail("");
+            // Reset everything and go to dashboard simulation
+            setCurrentStep("dashboard");
           }}
-          className="bg-green-600 hover:bg-green-700 text-white"
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2"
         >
           Continue to Dashboard
         </Button>
@@ -379,27 +460,34 @@ const BikeRentalSignup: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#141414] via-gray-800 to-[#141414] flex items-center justify-center p-4">
-      <Card className="w-full max-w-4xl bg-white border-tan-500 backdrop-blur-sm">
-        <CardHeader className="text-center pb-8">
+    <div className="min-h-screen bg-white flex lg:items-center justify-center">
+      <Card className="w-full max-w-md border-0 shadow-sm sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white lg:border-tan-500 backdrop-blur-sm">
+        <CardHeader className="text-center pb-6 px-4 sm:px-6">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Bike className="h-8 w-8 text-black/80" />
-            <CardTitle className="text-3xl font-bold text-black/80">
+            <Bike className="h-6 w-6 sm:h-8 sm:w-8 text-black/80" />
+            <CardTitle className="text-xl sm:text-2xl md:text-3xl font-bold text-black/80">
               BikeRental Pro
             </CardTitle>
           </div>
-          <CardDescription className="text-black/60 text-lg">
-            {currentStep === "signup" &&
-              "Join thousands of riders and start your cycling adventure today"}
+          <CardDescription className="text-sm sm:text-base md:text-lg text-black/60">
+            {currentStep === "phone" &&
+              "Enter your phone number to get started with BikeRental Pro"}
             {currentStep === "otp" &&
-              "Verify your email to complete registration"}
-            {currentStep === "success" && "Welcome to BikeRental Pro!"}
+              "Verify your phone number with the OTP we sent"}
+            {currentStep === "registration" &&
+              "Complete your profile to start renting bikes"}
+            {currentStep === "dashboard" &&
+              "Your account is ready - start your cycling adventure!"}
+            {currentStep === "success" &&
+              "Welcome to the BikeRental Pro community!"}
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          {currentStep === "signup" && renderSignupForm()}
+        <CardContent className="px-4 sm:px-6">
+          {currentStep === "phone" && renderPhoneForm()}
           {currentStep === "otp" && renderOtpForm()}
+          {currentStep === "registration" && renderRegistrationForm()}
+          {currentStep === "dashboard" && renderDashboard()}
           {currentStep === "success" && renderSuccessScreen()}
         </CardContent>
       </Card>

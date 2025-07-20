@@ -33,14 +33,15 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import Logo from "../brand/logo";
+import { useRouter } from "next/navigation";
 
 export default function HomeHeader({ isLoggedIn = false }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBikesDropdownOpen, setIsBikesDropdownOpen] = useState(false);
   const [isMobileBikesOpen, setIsMobileBikesOpen] = useState(false);
-
+  const router = useRouter();
   const handleNavigation = (path: string) => {
-    console.log(`Navigating to: ${path}`);
+    router.push(path);
     setIsMobileMenuOpen(false);
   };
 
@@ -73,7 +74,7 @@ export default function HomeHeader({ isLoggedIn = false }) {
 
                   {/* Mobile Menu Content */}
                   <div className="flex flex-col h-full">
-                    <nav className="flex-1 px-6 py-6 space-y-2">
+                    <nav className="px-6 space-y-2">
                       <Button
                         variant="ghost"
                         onClick={() => handleNavigation("/")}
@@ -141,7 +142,7 @@ export default function HomeHeader({ isLoggedIn = false }) {
                     </nav>
 
                     {/* Mobile Auth Section */}
-                    <div className="p-6 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                    <div className="p-6 border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                       {!isLoggedIn ? (
                         <div className="space-y-3">
                           <Button
