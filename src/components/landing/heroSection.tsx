@@ -4,11 +4,14 @@ import Image from "next/image";
 
 const HeroSection = () => {
   return (
-    <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen flex items-center pt-10 sm:pt-10 lg:pt-0 lg:px-10">
+  <>
+    <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-24 md:min-h-screen flex items-center pt-8 sm:pt-10 lg:pt-0 lg:px-10">
       <div className="absolute inset-0 bg-black/40"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-0 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center lg:mb-15">
-          <div className="space-y-6 sm:space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10 lg:gap-12 items-center lg:mb-15">
+          
+          {/* --- Desktop View --- */}
+          <div className="hidden sm:block space-y-6 sm:space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
                 Ride Your Dream
@@ -36,25 +39,29 @@ const HeroSection = () => {
             </div>
           </div>
 
-          <div className="relative mb-25 sm:mb-0 mt-8 sm:mt-10 lg:mt-0">
+          {/* --- Image Section (Desktop Only) --- */}
+          <div className="hidden sm:block relative mb-8 sm:mb-0">
             <div className="relative z-10">
               <Image
                 src="/image/HeroBike.png"
                 alt="Premium Motorcycle"
                 width={800}
                 height={600}
-                className="rounded-xl "
+                className="rounded-xl w-full h-auto shadow-2xl"
                 quality={85}
                 priority={true}
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
               />
             </div>
-            <div className="absolute -top-4 -right-4 w-full h-full bg-gradient-to-br from-[#AC9456] to-[#9B8449] rounded-2xl -z-10"></div>
+
+            <div className="absolute -top-4 -right-4 w-full h-full bg-gradient-to-br from-[#AC9456] to-[#9B8449] rounded-2xl -z-10 opacity-80"></div>
           </div>
+
         </div>
       </div>
     </section>
+  </>
   );
 };
 

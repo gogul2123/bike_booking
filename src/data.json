@@ -1,0 +1,417 @@
+[
+    {
+        "id": "101",
+        "biketype": "commuter",
+        "data": [ 
+            {
+                "_id": "650a1fb9f1d2c45678abc101",
+                "brand": "Honda",
+                "model": "SP 125",
+                "category": "motorcycle",
+                "type": "commuter",
+                "availability": true,
+                "price_per_day_INR": 500,
+                "colors": ["Black", "Blue", "Grey"],
+                "inventory": {
+                "total": 1,
+                "by_color": {
+                    "Black": 1,
+                    "Blue": 0,
+                    "Grey": 0
+                }
+                },
+                "imageUrl": "bike_booking/public/bikeImg/commuter/Honda-SP-125.webp",
+                "transmission": "manual",
+                "engine": {
+                "cc": 124,
+                "type": "Single-cylinder, air-cooled",
+                "power_bhp": "10.8",
+                "torque_nm": "10.9 Nm @ 6000 rpm"
+                },
+                "fuel_type": "petrol",
+                "mileage_kmpl": 65,
+                "top_speed_kmph": 100,
+                "seat_height_mm": 790,
+                "weight_kg": 117,
+                "features": [
+                "Digital meter",
+                "LED headlamp",
+                "eSP Technology",
+                "Silent start",
+                "Tubeless tires"
+                ],
+                "documents_required": [
+                "Valid Driving License",
+                "Government-issued ID Proof"
+                ],
+                "insurance": {
+                "included": true,
+                "type": "Comprehensive",
+                "coverage": "Covers accidental and third-party damage"
+                },
+                "rating": 4.4,
+                "reviews_count": 98,
+                "location_available": ["Coimbatore", "Ghandipuram", "Coimbatore Railway Station"]
+            },
+            {
+                "_id": "650a1fb9f1d2c45678abc102",
+                "brand": "Hero",
+                "model": "Splendor Plus",
+                "category": "motorcycle",
+                "type": "commuter",
+                "availability": true,
+                "price_per_day_INR": 450,
+                "colors": ["Black with Silver", "Red", "Blue"],
+                "inventory": {
+                "total": 1,
+                "by_color": {
+                    "Black with Silver": 0,
+                    "Red": 0,
+                    "Blue": 1
+                }
+                },
+                "imageUrl": "bike_booking/public/bikeImg/commuter/hero_splendor_plus.avifg",
+                "transmission": "manual",
+                "engine": {
+                "cc": 97,
+                "type": "Air-cooled, 4-stroke",
+                "power_bhp": "7.9",
+                "torque_nm": "8.05 Nm @ 6000 rpm"
+                },
+                "fuel_type": "petrol",
+                "mileage_kmpl": 70,
+                "top_speed_kmph": 87,
+                "seat_height_mm": 785,
+                "weight_kg": 110,
+                "features": [
+                "i3s Technology",
+                "Kick and electric start",
+                "Tubeless tyres",
+                "Alloy wheels",
+                "USB charger"
+                ],
+                "documents_required": [
+                "Valid Driving License",
+                "Government-issued ID Proof"
+                ],
+                "insurance": {
+                "included": true,
+                "type": "Third-party",
+                "coverage": "Basic accident and liability coverage"
+                },
+                "rating": 4.3,
+                "reviews_count": 76,
+                "location_available": ["Coimbatore", "Ghandipuram", "Coimbatore Railway Station"]
+            }
+        ]
+    },
+    {
+        "id": "102",
+        "biketype": "sports",
+        "data":[
+            {
+                "_id": "650a1fb9f1d2c45678abc201",
+                "brand": "Yamaha",
+                "model": "R15 V4",
+                "category": "motorcycle",
+                "type": "sport",
+                "availability": true,
+                "price_per_day_INR": 1200,
+                "colors": ["Racing Blue", "Metallic Grey"],
+                "inventory": {
+                "total": 1,
+                "by_color": {
+                    "Racing Blue": 0,
+                    "Metallic Grey": 1
+                }
+                },
+                "imageUrl": "bike_booking/public/bikeImg/sport/yamaha_r15_v4.webp",
+                "transmission": "manual",
+                "engine": {
+                "cc": 155,
+                "type": "Liquid-cooled, 4-stroke",
+                "power_bhp": "18.1",
+                "torque_nm": "14.2 Nm @ 7500 rpm"
+                },
+                "fuel_type": "petrol",
+                "mileage_kmpl": 40,
+                "top_speed_kmph": 140,
+                "seat_height_mm": 815,
+                "weight_kg": 142,
+                "features": [
+                "Variable Valve Actuation",
+                "LED lighting",
+                "Dual-channel ABS",
+                "Digital instrument cluster"
+                ],
+                "documents_required": [
+                "Valid Driving License",
+                "Government-issued ID Proof"
+                ],
+                "insurance": {
+                "included": true,
+                "type": "Comprehensive",
+                "coverage": "Full damage and third-party coverage"
+                },
+                "rating": 4.6,
+                "reviews_count": 201,
+                "location_available": ["Coimbatore", "Ghandipuram", "Coimbatore Railway Station"]
+            },
+            {
+                "_id": "650a1fb9f1d2c45678abc202",
+                "brand": "KTM",
+                "model": "RC 200",
+                "category": "motorcycle",
+                "type": "sport",
+                "availability": true,
+                "price_per_day_INR": 1400,
+                "colors": ["White", "Orange"],
+                "inventory": {
+                "total": 1,
+                "by_color": {
+                    "White": 0,
+                    "Orange": 1
+                }
+                },
+                "imageUrl": "bike_booking/public/bikeImg/sport/KTM_RC_200.jpg",
+                "transmission": "manual",
+                "engine": {
+                "cc": 199.5,
+                "type": "Liquid-cooled, DOHC",
+                "power_bhp": "25",
+                "torque_nm": "19.2 Nm @ 8000 rpm"
+                },
+                "fuel_type": "petrol",
+                "mileage_kmpl": 35,
+                "top_speed_kmph": 140,
+                "seat_height_mm": 835,
+                "weight_kg": 160,
+                "features": [
+                "Split LED headlamp",
+                "LCD dashboard",
+                "ABS",
+                "Trellis frame"
+                ],
+                "documents_required": [
+                "Valid Driving License",
+                "Government-issued ID Proof"
+                ],
+                "insurance": {
+                "included": true,
+                "type": "Comprehensive",
+                "coverage": "Full body and engine protection"
+                },
+                "rating": 4.5,
+                "reviews_count": 162,
+                "location_available": ["Coimbatore", "Ghandipuram", "Coimbatore Railway Station"]
+            }
+        ]
+    },
+    {
+        "id": "103",
+        "biketype": "cruiser",
+        "data": [
+            {
+                "_id": "650a1fb9f1d2c45678abc301",
+                "brand": "Royal Enfield",
+                "model": "Meteor 350",
+                "category": "motorcycle",
+                "type": "cruiser",
+                "availability": true,
+                "price_per_day_INR": 1600,
+                "colors": ["Fireball Red", "Supernova Brown"],
+                "inventory": {
+                "total": 1,
+                "by_color": {
+                    "Fireball Red": 0,
+                    "Supernova Brown": 1
+                }
+                },
+                "imageUrl": "bike_booking/public/bikeImg/cruiser/royal_enfield_meteor_350.webp",
+                "transmission": "manual",
+                "engine": {
+                "cc": 349,
+                "type": "Air-oil cooled, SOHC",
+                "power_bhp": "20.2",
+                "torque_nm": "27 Nm @ 4000 rpm"
+                },
+                "fuel_type": "petrol",
+                "mileage_kmpl": 35,
+                "top_speed_kmph": 120,
+                "seat_height_mm": 765,
+                "weight_kg": 191,
+                "features": [
+                "Tripper Navigation",
+                "Comfortable seating",
+                "USB charging port",
+                "ABS"
+                ],
+                "documents_required": [
+                "Valid Driving License",
+                "Government-issued ID Proof"
+                ],
+                "insurance": {
+                "included": true,
+                "type": "Third-party",
+                "coverage": "Liability and minor damage coverage"
+                },
+                "rating": 4.6,
+                "reviews_count": 134,
+                "location_available": ["Coimbatore", "Ghandipuram", "Coimbatore Railway Station"]
+            },
+            {
+                "_id": "650a1fb9f1d2c45678abc302",
+                "brand": "Bajaj",
+                "model": "Avenger Cruise 220",
+                "category": "motorcycle",
+                "type": "cruiser",
+                "availability": true,
+                "price_per_day_INR": 1500,
+                "colors": ["Moon White", "Auburn Black"],
+                "inventory": {
+                "total": 1,
+                "by_color": {
+                    "Moon White": 1,
+                    "Auburn Black": 0
+                }
+                },
+                "imageUrl": "bike_booking/public/bikeImg/cruiser/bajaj_avenger.avif",
+                "transmission": "manual",
+                "engine": {
+                "cc": 220,
+                "type": "Twin spark, oil-cooled",
+                "power_bhp": "19",
+                "torque_nm": "17.5 Nm @ 7000 rpm"
+                },
+                "fuel_type": "petrol",
+                "mileage_kmpl": 40,
+                "top_speed_kmph": 115,
+                "seat_height_mm": 737,
+                "weight_kg": 163,
+                "features": [
+                "Low seat height",
+                "Long wheelbase",
+                "Cruiser handlebar",
+                "Windshield"
+                ],
+                "documents_required": [
+                "Valid Driving License",
+                "Government-issued ID Proof"
+                ],
+                "insurance": {
+                "included": true,
+                "type": "Third-party",
+                "coverage": "Basic damage and liability"
+                },
+                "rating": 4.4,
+                "reviews_count": 97,
+                "location_available": ["Coimbatore", "Ghandipuram", "Coimbatore Railway Station"]
+            }
+        ]
+    },
+    {
+        "id": "104",
+        "biketype": "adventure",
+        "data": [
+            {
+                "_id": "650a1fb9f1d2c45678abc401",
+                "brand": "KTM",
+                "model": "390 Adventure",
+                "category": "motorcycle",
+                "type": "adventure",
+                "availability": true,
+                "price_per_day_INR": 2000,
+                "colors": ["Orange", "White"],
+                "inventory": {
+                "total": 1,
+                "by_color": {
+                    "Orange": 1,
+                    "White": 0
+                }
+                },
+                "imageUrl": "bike_booking/public/bikeImg/adventure/ktm_390_adventure.avif",
+                "transmission": "manual",
+                "engine": {
+                "cc": 373,
+                "type": "Liquid-cooled, single-cylinder",
+                "power_bhp": "43",
+                "torque_nm": "37 Nm @ 7000 rpm"
+                },
+                "fuel_type": "petrol",
+                "mileage_kmpl": 28,
+                "top_speed_kmph": 170,
+                "seat_height_mm": 855,
+                "weight_kg": 177,
+                "features": [
+                "TFT display",
+                "Cornering ABS",
+                "Traction Control",
+                "Ride-by-wire"
+                ],
+                "documents_required": [
+                "Valid Driving License",
+                "Government-issued ID Proof"
+                ],
+                "insurance": {
+                "included": true,
+                "type": "Comprehensive",
+                "coverage": "Full damage and off-road cover"
+                },
+                "rating": 4.8,
+                "reviews_count": 142,
+                "location_available": ["Coimbatore","Ghandipuram", "Coimbatore Railway Station"]
+            },
+            {
+                "_id": "650a1fb9f1d2c45678abc003",
+                "brand": "BMW",
+                "model": "G 310 GS",
+                "category": "motorcycle",
+                "type": "adventure",
+                "availability": true,
+                "price_per_day_INR": 2500,
+                "colors": ["Racing Red", "Polar White", "Cosmic Black"],
+                "inventory": {
+                    "total": 1,
+                    "by_color": {
+                    "Racing Red": 0,
+                    "Polar White": 1,
+                    "Cosmic Black": 0
+                    }
+                },
+                "imageUrl": "bike_booking/public/bikeImg/adventure/bmw.jpg",
+                "transmission": "manual",
+                "engine": {
+                    "cc": 313,
+                    "type": "Single-cylinder, liquid-cooled, 4-stroke",
+                    "power_bhp": "33.5",
+                    "torque_nm": "28 Nm @ 7500 rpm"
+                },
+                "fuel_type": "petrol",
+                "mileage_kmpl": 30,
+                "top_speed_kmph": 143,
+                "seat_height_mm": 835,
+                "weight_kg": 169.5,
+                "features": [
+                    "Upside-down front forks",
+                    "Dual-channel ABS",
+                    "LED Headlight",
+                    "Adjustable brake and clutch levers",
+                    "Multifunction LCD display"
+                ],
+                "documents_required": [
+                    "Valid Driving License",
+                    "Government-issued ID Proof"
+                ],
+                "insurance": {
+                    "included": true,
+                    "type": "Comprehensive",
+                    "coverage": "Covers damage, theft, and third-party liability"
+                },
+                "rating": 4.6,
+                "reviews_count": 87,
+                "location_available": ["Coimbatore","Ghandipuram", "Coimbatore Railway Station"]
+            }
+
+        ]
+    }
+]

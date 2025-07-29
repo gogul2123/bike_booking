@@ -460,8 +460,8 @@ const BikeRentalSignup: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-white flex lg:items-center justify-center">
-      <Card className="w-full max-w-md border-0 shadow-sm sm:max-w-lg md:max-w-xl lg:max-w-2xl bg-white lg:border-tan-500 backdrop-blur-sm">
+    <div className="min-h-screen  bg-gradient-to-br from-[#141414] via-gray-800 to-[#141414] flex items-center justify-center p-4">
+      <Card className="w-full max-w-md border-0 shadow-sm sm:max-w-lg md:max-w-xl lg:max-w-xl bg-white lg:border-tan-500 backdrop-blur-sm">
         <CardHeader className="text-center pb-6 px-4 sm:px-6">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Bike className="h-6 w-6 sm:h-8 sm:w-8 text-black/80" />

@@ -25,10 +25,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased scrollbar-hide overflow-y-scroll  `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-auto scrollbar-hidden  `}
       >
         <CartProvider>
           <main className="flex min-h-screen flex-col bg-background text-foreground">

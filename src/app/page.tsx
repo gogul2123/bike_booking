@@ -1,7 +1,8 @@
 // // components/LandingPage.tsx (Main component)
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import HeroSection from "../components/landing/heroSection";
 import BookingSection from "../components/landing/bookingSection";
 import BikeCategoriesSection from "../components/landing/bikeCatSection";
@@ -9,10 +10,14 @@ import FeaturesSection from "../components/landing/featuresSection";
 import StepsSection from "../components/landing/stepsSection";
 import ReviewsSection from "../components/landing/reviewsSection";
 import CTASection from "../components/landing/CTASection";
-import { FaShieldAlt, FaClock, FaWrench, FaHeadphones } from "react-icons/fa";
+import { FaShieldAlt, FaClock, FaWrench, FaHeadphones, FaMoneyBill } from "react-icons/fa";
 import Header from "@/components/header/header";
 import LandingHeader from "@/components/header/landing-header";
 import Footer from "@/components/footer/footer";
+import MContent from "@/components/landing/mContent";
+import FAQSection from "@/components/landing/FAQ";
+import { RiRefund2Fill } from "react-icons/ri";
+import { Router } from "lucide-react";
 
 interface SearchData {
   city: string;
@@ -23,6 +28,7 @@ interface SearchData {
 }
 
 const LandingPage = () => {
+  const router = useRouter();
   const [searchData, setSearchData] = useState<SearchData>({
     city: "",
     pickupDate: "",
@@ -31,7 +37,28 @@ const LandingPage = () => {
     dropoffTime: "",
   });
 
+  useEffect(() => {
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('bikeSearchData');
+      if (stored) {
+        try {
+          const parsed: SearchData = JSON.parse(stored);
+          setSearchData(parsed);
+        } catch (err) {
+          console.error('Failed to parse searchData from localStorage', err);
+        }
+      }
+    }
+  }, []);
+
   const bikeCategories = [
+     {
+      name: "Commuter Bikes",
+      image: "/bikeImg/landing/hondaActive.jpg",
+      models: ["Honda Activa", "TVS Jupiter", "Bajaj Platina"],
+      startingPrice: "₹400/day",
+    },
     {
       name: "Sports Bikes",
       image: "/bikeImg/landing/ktm_RC.jpg",
@@ -43,12 +70,6 @@ const LandingPage = () => {
       image: "/bikeImg/landing/Classic350.jpg",
       models: ["Royal Enfield Classic", "Bajaj Avenger", "Harley Davidson"],
       startingPrice: "₹1200/day",
-    },
-    {
-      name: "Commuter Bikes",
-      image: "/bikeImg/landing/hondaActive.jpg",
-      models: ["Honda Activa", "TVS Jupiter", "Bajaj Platina"],
-      startingPrice: "₹400/day",
     },
     {
       name: "Adventure Bikes",
@@ -81,6 +102,16 @@ const LandingPage = () => {
       title: "Well-Maintained Fleet",
       description: "Regular maintenance and quality checks ensure safe rides",
     },
+     {
+      icon: <FaMoneyBill  />,
+      title: "Different Flexible Packages",
+      description: "Grab daily, weekly, fortnight and monthly packages at discounted rates",
+    },
+     {
+      icon: <RiRefund2Fill size={26}/>,
+      title: "Instant Refund",
+      description: "Facing an issue while booking/pick up? We initiate instant refund",
+    },
   ];
 
   const steps = [
@@ -109,6 +140,8 @@ const LandingPage = () => {
 
   const handleSearch = () => {
     console.log("Search data:", searchData);
+    // Here you can handle the search logic, e.g., redirecting to a search results page
+    router.push(`/bikes?city=${searchData.city}&pickupDate=${searchData.pickupDate}&pickupTime=${searchData.pickupTime}&dropoffDate=${searchData.dropoffDate}&dropoffTime=${searchData.dropoffTime}`);
   };
 
   const handleInputChange = (field: keyof SearchData, value: string) => {
@@ -127,9 +160,11 @@ const LandingPage = () => {
         onInputChange={handleInputChange}
         onSearch={handleSearch}
       />
+      <MContent/>
       <BikeCategoriesSection categories={bikeCategories} />
       <FeaturesSection features={features} />
       <StepsSection steps={steps} />
+      <FAQSection />
       <ReviewsSection speed="normal" />
       <CTASection />
       <Footer />

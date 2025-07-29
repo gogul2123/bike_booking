@@ -368,6 +368,7 @@ import { RiMotorbikeFill } from "react-icons/ri";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { CiMail } from "react-icons/ci";
 import { MdOutlineLock, MdOutlineVerifiedUser } from "react-icons/md";
+import Link from "next/link";
 
 // Validation schemas
 const signInSchema = z.object({
@@ -888,7 +889,7 @@ export default function LoginPage() {
   // Main Sign In Screen
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#141414] via-gray-800 to-[#141414] flex items-center justify-center p-4">
-      <div className="w-full max-w-sm mx-auto">
+      <div className="h-full w-full max-w-sm mx-auto">
         <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6 backdrop-blur-lg border border-white/20">
           {/* Header */}
           <div className="text-center space-y-4">
@@ -1005,13 +1006,15 @@ export default function LoginPage() {
           {/* Footer */}
           <div className="text-center pt-4 border-t">
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <Button
-                variant={"none"}
-                className="text-tan-600 hover:text-tan-700 font-medium transition-colors"
-              >
+              Don't have an account?
+              <Link href="/signUp">
+                <Button
+                  variant={"none"}
+                  className="text-tan-600 hover:text-tan-700 font-medium transition-colors"
+                >
                 Sign Up
-              </Button>
+                </Button>
+              </Link>
             </p>
           </div>
         </div>
