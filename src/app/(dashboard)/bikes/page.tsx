@@ -17,8 +17,10 @@ import {
   Heart,
   Users,
   Fuel,
-  Settings
+  Settings,
+  ShoppingCart
 } from "lucide-react";
+import BookingModal from "@/components/bikes/bike-model"; // Assuming you have a BookingModal component
 
 // Types
 interface BikeEngine {
@@ -50,6 +52,7 @@ interface BikeData {
   colors: string[];
   inventory: BikeInventory;
   imageUrl: string;
+  color_image_urls: { [key: string]: string };
   transmission: string;
   engine: BikeEngine;
   fuel_type: string;
@@ -85,6 +88,13 @@ interface Filters {
   selectedCategories: string[];
   selectedBrands: string[];
   availability: string;
+  favorites: boolean;
+}
+
+interface CartItem {
+  bike: BikeData;
+  quantity: number;
+  selectedColor: string;
 }
 
 // Sample data from your original code
@@ -103,14 +113,18 @@ const bikesData: BikeTypeData[] = [
                 "price_per_day_INR": 500,
                 "colors": ["Black", "Blue", "Grey"],
                 "inventory": {
-                "total": 1,
+                "total": 2,
                 "by_color": {
                     "Black": 1,
-                    "Blue": 0,
+                    "Blue": 1,
                     "Grey": 0
                 }
                 },
                 "imageUrl": "/bikeImg/commuter/Honda-SP-125.webp",
+                "color_image_urls": {
+                  "Black": "/bikeImg/commuter/Honda-SP-125-Black.jpg",
+                  "Blue": "/bikeImg/commuter/Honda-SP-125-Blue.webp",
+                },
                 "transmission": "manual",
                 "engine": {
                 "cc": 124,
@@ -161,6 +175,11 @@ const bikesData: BikeTypeData[] = [
                 }
                 },
                 "imageUrl": "/bikeImg/commuter/hero_splendor_plus.jpg",
+                 "color_image_urls": {
+                  "Black": "/bikeImg/commuter/Honda-SP-125-Black.webp",
+                  "Blue": "/bikeImg/commuter/Honda-SP-125-Blue.webp",
+                  "Grey": "/bikeImg/commuter/Honda-SP-125-Grey.webp"
+                },
                 "transmission": "manual",
                 "engine": {
                 "cc": 97,
@@ -216,6 +235,11 @@ const bikesData: BikeTypeData[] = [
                 }
                 },
                 "imageUrl": "/bikeImg/sport/yamaha_r15_v4.webp",
+                 "color_image_urls": {
+                  "Black": "/bikeImg/commuter/Honda-SP-125-Black.webp",
+                  "Blue": "/bikeImg/commuter/Honda-SP-125-Blue.webp",
+                  "Grey": "/bikeImg/commuter/Honda-SP-125-Grey.webp"
+                },
                 "transmission": "manual",
                 "engine": {
                 "cc": 155,
@@ -264,6 +288,11 @@ const bikesData: BikeTypeData[] = [
                 }
                 },
                 "imageUrl": "/bikeImg/sport/KTM_RC_200.jpg",
+                 "color_image_urls": {
+                  "Black": "/bikeImg/commuter/Honda-SP-125-Black.webp",
+                  "Blue": "/bikeImg/commuter/Honda-SP-125-Blue.webp",
+                  "Grey": "/bikeImg/commuter/Honda-SP-125-Grey.webp"
+                },
                 "transmission": "manual",
                 "engine": {
                 "cc": 199.5,
@@ -318,6 +347,11 @@ const bikesData: BikeTypeData[] = [
                 }
                 },
                 "imageUrl": "/bikeImg/cruiser/royal_enfield_meteor_350.webp",
+                 "color_image_urls": {
+                  "Black": "/bikeImg/commuter/Honda-SP-125-Black.webp",
+                  "Blue": "/bikeImg/commuter/Honda-SP-125-Blue.webp",
+                  "Grey": "/bikeImg/commuter/Honda-SP-125-Grey.webp"
+                },
                 "transmission": "manual",
                 "engine": {
                 "cc": 349,
@@ -366,6 +400,11 @@ const bikesData: BikeTypeData[] = [
                 }
                 },
                 "imageUrl": "/bikeImg/cruiser/bajaj_avenger.avif",
+                 "color_image_urls": {
+                  "Black": "/bikeImg/commuter/Honda-SP-125-Black.webp",
+                  "Blue": "/bikeImg/commuter/Honda-SP-125-Blue.webp",
+                  "Grey": "/bikeImg/commuter/Honda-SP-125-Grey.webp"
+                },
                 "transmission": "manual",
                 "engine": {
                 "cc": 220,
@@ -420,6 +459,11 @@ const bikesData: BikeTypeData[] = [
                 }
                 },
                 "imageUrl": "/bikeImg/adventure/ktm_390_adventure.avif",
+                 "color_image_urls": {
+                  "Black": "/bikeImg/commuter/Honda-SP-125-Black.webp",
+                  "Blue": "/bikeImg/commuter/Honda-SP-125-Blue.webp",
+                  "Grey": "/bikeImg/commuter/Honda-SP-125-Grey.webp"
+                },
                 "transmission": "manual",
                 "engine": {
                 "cc": 373,
@@ -469,6 +513,11 @@ const bikesData: BikeTypeData[] = [
                     }
                 },
                 "imageUrl": "/bikeImg/adventure/bmw.jpg",
+                 "color_image_urls": {
+                  "Black": "/bikeImg/commuter/Honda-SP-125-Black.webp",
+                  "Blue": "/bikeImg/commuter/Honda-SP-125-Blue.webp",
+                  "Grey": "/bikeImg/commuter/Honda-SP-125-Grey.webp"
+                },
                 "transmission": "manual",
                 "engine": {
                     "cc": 313,
@@ -517,6 +566,13 @@ const BikeListingPage: React.FC = () => {
   const [showMobileSearch, setShowMobileSearch] = useState<boolean>(false);
   const [showMobileFilters, setShowMobileFilters] = useState<boolean>(false);
   const [showDesktopFilters, setShowDesktopFilters] = useState<boolean>(true);
+
+  const [likedBikes, setLikedBikes] = useState<string[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [selectedBike, setSelectedBike] = useState<BikeData | null>(null);
+  const [showBookingModal, setShowBookingModal] = useState<boolean>(false);
+  
+  
   
   const [filters, setFilters] = useState<Filters>({
     priceRange: [500, 3500],
@@ -524,6 +580,7 @@ const BikeListingPage: React.FC = () => {
     selectedCategories: [],
     selectedBrands: [],
     availability: "all",
+    favorites: false,
   });
 
   // Flatten bikes data for easier processing
@@ -555,11 +612,12 @@ const BikeListingPage: React.FC = () => {
         filters.availability === "all" ||
         (filters.availability === "available" && bike.availability) ||
         (filters.availability === "booked" && !bike.availability);
+      const favoritesCheck = !filters.favorites || likedBikes.includes(bike._id);  
 
-      return priceCheck && typeCheck && categoryCheck && brandCheck && availabilityCheck;
+      return priceCheck && typeCheck && categoryCheck && brandCheck && availabilityCheck && favoritesCheck;
     });
-  }, [allBikes, filters]);
-
+  }, [allBikes, filters, likedBikes]);
+  
   const getTypeIcon = (type: string): React.JSX.Element => {
     switch (type) {
       case "adventure":
@@ -582,7 +640,9 @@ const BikeListingPage: React.FC = () => {
       selectedCategories: [],
       selectedBrands: [],
       availability: "all",
+      favorites: false,
     });
+    
   };
 
   const toggleArrayFilter = (value: string, filterKey: keyof Pick<Filters, 'selectedTypes' | 'selectedCategories' | 'selectedBrands'>): void => {
@@ -594,94 +654,152 @@ const BikeListingPage: React.FC = () => {
     }));
   };
 
-  const BikeCard: React.FC<{ bike: BikeData; index: number }> = ({ bike, index }) => {
-  const [liked, setLiked] = useState(false);
+  const openBookingModal = (bike: BikeData): void => {
+    setSelectedBike(bike);
+    setShowBookingModal(true);
+  };
+
+  const closeBookingModal = (): void => {
+    setShowBookingModal(false);
+    setSelectedBike(null);
+  };
+
+  const addToCart = (bike: BikeData, days: number, selectedColor: string): void => {
+    setCart(prev => {
+      const existingItem = prev.find(item => 
+        item.bike._id === bike._id && item.selectedColor === selectedColor
+      );
+      
+      if (existingItem) {
+        return prev.map(item =>
+          item.bike._id === bike._id && item.selectedColor === selectedColor
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        return [...prev, { bike, quantity: 1, selectedColor }];
+      }
+    });
+  };
+
+  const handleBookNow = (bike: BikeData, days: number, selectedColor: string): void => {
+    // Handle booking logic here
+    console.log('Booking:', { bike, days, selectedColor });
+  };
+
+  const getCartItemCount = (bikeId: string): number => {
+    return cart.reduce((total, item) => 
+      item.bike._id === bikeId ? total + item.quantity : total, 0
+    );
+  };
+
+  const getTotalCartItems = (): number => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  };
+
+  const BikeCard: React.FC<{ bike: BikeData; index: number }> = ({ bike, index  }) => {
+    const cartCount = getCartItemCount(bike._id);
+    const [liked, setLiked] = useState<boolean>(false);
+    console.log("Bike Data:", bike, "Liked State:");
+    // const isLiked = likedBikes.includes(bike._id);
 
   // Load liked state from localStorage on mount
   useEffect(() => {
     const storedLikes = JSON.parse(localStorage.getItem("likedBikes") || "[]");
-    if (storedLikes.includes(bike._id)) setLiked(true);
+    setLiked(storedLikes.includes(bike._id));
   }, [bike._id]);
 
   // Toggle like state and update localStorage
   const toggleLike = () => {
-    const storedLikes = JSON.parse(localStorage.getItem("likedBikes") || "[]");
+    const storedLikes = JSON.parse(localStorage.getItem("likedBikes") || "[]") as string[];
     let updatedLikes;
 
     if (liked) {
-      updatedLikes = storedLikes.filter((id: string) => id !== bike._id);
+      updatedLikes = storedLikes.filter(id => id !== bike._id);
     } else {
       updatedLikes = [...storedLikes, bike._id];
     }
 
     localStorage.setItem("likedBikes", JSON.stringify(updatedLikes));
     setLiked(!liked);
+    setLikedBikes(updatedLikes); // sync global state
   };
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-      <div className="relative">
-        <img 
-          src={bike.imageUrl} 
-          alt={`${bike.brand} ${bike.model}`}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <button
-          onClick={toggleLike}
-          className="absolute top-3 right-3 p-2 bg-white/80 rounded-full hover:bg-white transition-colors">
-           <Heart
-            className={`w-5 h-5 transition-colors ${
-              liked ? "text-red-500 fill-red-500" : "text-gray-600"
-            }`}
+        <div className="relative">
+          <img 
+            src={bike.imageUrl} 
+            alt={`${bike.brand} ${bike.model}`}
+            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           />
-        </button>
-        <div className="absolute bottom-3 left-3">
-          <span className="bg-black/70 text-white px-2 py-1 rounded text-xs font-medium">
-            {bike.engine.cc}cc
-          </span>
-        </div>
-      </div>
-      
-      <div className="p-4">
-        <div className="md:h-24 flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-bold text-lg text-gray-900">
-              {bike.brand} {bike.model}
-            </h3>
-            <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm font-medium">{bike.rating}</span>
-              <span className="text-sm text-gray-500">({bike.reviews_count})</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
-            <div className="flex items-center gap-1">
-              <Users className="w-4 h-4" />
-              <span>2 seats</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Fuel className="w-4 h-4" />
-              <span>{bike.mileage_kmpl} kmpl</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Settings className="w-4 h-4" />
-              <span>{bike.transmission}</span>
-            </div>
+          <button
+            onClick={toggleLike}
+            className="absolute top-3 right-3 p-2 bg-white/80 rounded-full hover:bg-white transition-colors">
+             <Heart
+              className={`w-5 h-5 transition-colors ${
+                liked  ? "text-red-500 fill-red-500" : "text-gray-600"
+              }`}
+            />
+          </button>
+          <div className="absolute bottom-3 left-3">
+            <span className="bg-black/70 text-white px-2 py-1 rounded text-xs font-medium">
+              {bike.engine.cc}cc
+            </span>
           </div>
         </div>
         
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="text-2xl font-bold text-[#AC9456]">₹{bike.price_per_day_INR}</span>
-            <span className="text-gray-500 text-sm">/day</span>
+        <div className="p-4">
+          <div className="md:h-24 flex flex-col justify-between">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-bold text-lg text-gray-900">
+                {bike.brand} {bike.model}
+              </h3>
+              <div className="flex items-center gap-1">
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-sm font-medium">{bike.rating}</span>
+                <span className="text-sm text-gray-500">({bike.reviews_count})</span>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4 mb-3 text-sm text-gray-600">
+              <div className="flex items-center gap-1">
+                <Users className="w-4 h-4" />
+                <span>2 seats</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Fuel className="w-4 h-4" />
+                <span>{bike.mileage_kmpl} kmpl</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Settings className="w-4 h-4" />
+                <span>{bike.transmission}</span>
+              </div>
+            </div>
           </div>
-          <button className=" bg-gradient-to-r from-[#AC9456] to-[#D4B76A] text-white px-6 py-2 rounded-lg font-medium transition-colors">
-            Book Now
-          </button>
+          
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-2xl font-bold text-[#AC9456]">₹{bike.price_per_day_INR}</span>
+              <span className="text-gray-500 text-sm">/day</span>
+            </div>
+            <div className="flex gap-2">
+              {cartCount > 0 && (
+                <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
+                  <ShoppingCart className="w-4 h-4" />
+                  <span className="text-sm font-medium">{cartCount}</span>
+                </div>
+              )}
+              <button 
+                onClick={() => openBookingModal(bike)}
+                className="bg-gradient-to-r from-[#AC9456] to-[#D4B76A] text-white px-6 py-2 rounded-lg font-medium transition-colors"
+              >
+                Book Now
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
     );
   };
 
@@ -695,6 +813,22 @@ const BikeListingPage: React.FC = () => {
             <X className="w-6 h-6" />
           </button>
         )}
+      </div>
+
+       {/* Favorites Filter */}
+      <div className="mb-6">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={filters.favorites}
+            onChange={(e) => setFilters(prev => ({ ...prev, favorites: e.target.checked }))}
+            className="rounded border-gray-300"
+          />
+          <div className="flex items-center gap-2">
+            <Heart className="w-4 h-4" />
+            <span className="text-sm font-medium">Show Favorites Only</span>
+          </div>
+        </label>
       </div>
       
       {/* Price Range */}
@@ -793,7 +927,7 @@ const BikeListingPage: React.FC = () => {
 
       {/* Clear Filters */}
       <button
-        onClick={clearAllFilters}
+        onClick={() => {clearAllFilters(); setShowMobileFilters(false);}}
         className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg transition-colors"
       >
         Clear All Filters
@@ -807,10 +941,21 @@ const BikeListingPage: React.FC = () => {
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Premium Bikes</h1>
-          
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Premium Bikes</h1>
+              {/* Cart Icon */}
+              <div className="relative">
+                <ShoppingCart className="w-6 h-6 text-gray-700" />
+                {getTotalCartItems() > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-[#AC9456] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {getTotalCartItems()}
+                  </span>
+                )}
+              </div>
+          </div>
+
           {/* Desktop Search Bar */}
-          <div className="hidden md:flex items-center gap-4 bg-gray-50 p-4 rounded-lg">
+          <div className="hidden md:flex flex-wrap items-center gap-4 bg-gray-50 p-4 rounded-lg">
             <div className="flex items-center gap-2 flex-1">
               <MapPin className="w-5 h-5 text-gray-500" />
               <input
@@ -961,7 +1106,7 @@ const BikeListingPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredBikes.map((bike, index) => (
-                <BikeCard key={bike._id} bike={bike} index={index} />
+                <BikeCard key={bike._id} bike={bike} index={index}  />
               ))}
             </div>
 
@@ -1001,6 +1146,14 @@ const BikeListingPage: React.FC = () => {
           </div>
         </div>
       )}
+       {/* Booking Modal */}
+      <BookingModal
+        bike={selectedBike}
+        isOpen={showBookingModal}
+        onClose={closeBookingModal}
+        // onAddToCart={addToCart}
+        onBookNow={handleBookNow}
+      />
     </div>
   );
 };

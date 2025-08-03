@@ -29,10 +29,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-y-auto scrollbar-hidden  `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased scrollbar-hidden `}
       >
         <CartProvider>
-          <main className="flex min-h-screen flex-col bg-background text-foreground">
+          <main className="flex min-h-screen flex-col bg-background text-foreground ">
             {children}
           </main>
         </CartProvider>
