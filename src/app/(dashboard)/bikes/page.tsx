@@ -944,14 +944,14 @@ const BikeListingPage: React.FC = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-gray-900 mb-4">Premium Bikes</h1>
               {/* Cart Icon */}
-              <div className="relative">
+              {/* <div className="relative">
                 <ShoppingCart className="w-6 h-6 text-gray-700" />
                 {getTotalCartItems() > 0 && (
                   <span className="absolute -top-2 -right-2 bg-[#AC9456] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {getTotalCartItems()}
                   </span>
                 )}
-              </div>
+              </div> */}
           </div>
 
           {/* Desktop Search Bar */}

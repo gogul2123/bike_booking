@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
 import { CartProvider } from "@/context/CartContext"; 
+import LandingHeader from "@/components/header/landing-header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +33,10 @@ export default function RootLayout({
       >
         <CartProvider>
           <main className="flex min-h-screen flex-col bg-background text-foreground ">
+          <LandingHeader 
+            isLoggedIn={true}
+            cartItemCount={10}
+          />
             {children}
           </main>
         </CartProvider>

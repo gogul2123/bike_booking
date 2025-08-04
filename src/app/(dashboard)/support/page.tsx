@@ -171,7 +171,7 @@ export default function HelpSupportPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {supportChannels.map((channel, index) => (
               <div key={index} className="bg-white rounded-2xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow duration-300">
-                <div className={`${channel.color} rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center`}>
+                <div className={`bg-[#1E1E1E] rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center`}>
                   <channel.icon className="h-8 w-8 text-white" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 mb-2">{channel.title}</h3>

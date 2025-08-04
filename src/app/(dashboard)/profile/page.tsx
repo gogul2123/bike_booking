@@ -1,12 +1,11 @@
-// app/(dashboard)/profile/page.tsx
+
 'use client';
 import React, { useState } from 'react';
-import { Menu } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import SidebarMenu from '@/components/profile/SidebarMenu';
 import ProfileTab from '@/components/profile/ProfileTab';
 import PaymentHistory from '@/components/profile/PaymentHistory';
 import MyBookings from '@/components/profile/MyBookings';
+import MobileTopNav from '@/components/profile/MobiletopNav';
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -27,6 +26,13 @@ const ProfilePage = () => {
 
   return (
     <div className="flex min-h-screen">
+      {/* Mobile Bottom Navigation - Only visible on mobile */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+        <MobileTopNav 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab}
+        />
+      </div>
 
       {/* Sidebar - Hidden on mobile, visible on desktop */}
       <div className="hidden md:block w-64 flex-shrink-0">
@@ -49,7 +55,7 @@ const ProfilePage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-6 pt-16 md:pt-6">
+      <div className="flex-1 p-4 md:p-6 pb-20 md:pb-6">
         {renderTab()}
       </div>
     </div>
