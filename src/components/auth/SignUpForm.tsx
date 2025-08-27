@@ -224,10 +224,10 @@ const BikeRentalSignup: React.FC = () => {
         </div>
 
         <Button
+          variant={"gold"}
           type="submit"
           disabled={isLoading}
           onClick={phoneForm.handleSubmit(handlePhoneSubmit)}
-          className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
         >
           {isLoading ? "Sending OTP..." : "Send OTP"}
         </Button>
