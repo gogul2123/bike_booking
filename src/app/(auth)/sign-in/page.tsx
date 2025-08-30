@@ -681,6 +681,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SignInForm from "@/components/auth/SignInForm";
+import { useAlert } from "@/hooks/alertHook";
+import Alert from "@/components/ui/alert";
+import { useAppContext } from "@/hooks/context";
+import { getFromLocalStorage, saveToLocalStorage } from "@/components/ui/encryption";
+import { get } from "http";
 
 interface SignInData {
   email: string;
@@ -690,28 +695,52 @@ interface SignInData {
 export default function UserSignInPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { alert, showAlert, hideAlert } = useAlert();
+  const { URL } = useAppContext();
 
   const handleSignIn = async (data: SignInData) => {
     setIsLoading(true);
+    const payload = {
+      emailOrMobile: data.email,
+      password: data.password,
+    };
     try {
-      // User sign in API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("User sign in data:", data);
-      
-      // Redirect to user dashboard
-      // router.push("/dashboard");
+      const res = await fetch(`${URL}auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if(res.status === 200) {
+        const result = await res.json();
+        saveToLocalStorage("userId", result?.data?.user?.userId);
+        saveToLocalStorage("role", result?.data?.user?.role);
+        saveToLocalStorage("email", result?.data?.user?.email);
+        saveToLocalStorage("token", result?.data?.token);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        showAlert("Sign in successfully!", "success");
+        router.push("/");
+      } else if (res.status === 401) {
+        showAlert("Invalid email or password", "error");
+      }
     } catch (error) {
       console.error("User sign in error:", error);
+      showAlert("An error occurred during sign in", "error");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <SignInForm 
-      role="user" 
-      onSubmit={handleSignIn} 
-      isLoading={isLoading} 
-    />
+    <>
+        <SignInForm 
+          role="user" 
+          onSubmit={handleSignIn} 
+          isLoading={isLoading} 
+        />
+        <Alert alert={alert} hideAlert={hideAlert} />
+    </>
   );
 }

@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer/footer";
-import { CartProvider } from "@/context/CartContext"; 
+import { CartProvider } from "@/hooks/CartContext"; 
 import LandingHeader from "@/components/header/landing-header";
+import { AppProvider } from "@/hooks/context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,15 +32,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased scrollbar-hidden `}
       >
-        <CartProvider>
-          <main className="flex min-h-screen flex-col bg-background text-foreground ">
-          <LandingHeader 
-            isLoggedIn={true}
-            cartItemCount={10}
-          />
-            {children}
-          </main>
-        </CartProvider>
+        <AppProvider>
+          <CartProvider>
+            <main className="flex min-h-screen flex-col bg-background text-foreground ">
+            <LandingHeader 
+              isLoggedIn={true}
+              cartItemCount={10}
+            />
+              {children}
+            </main>
+          </CartProvider>
+        </AppProvider>
       </body>
     </html>
   );

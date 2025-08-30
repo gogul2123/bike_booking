@@ -381,7 +381,7 @@
 
 import React, { useEffect, useState } from "react";
 import { X, Plus, Minus, MapPin, Calendar } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/hooks/CartContext";
 
 // Types
 interface BikeEngine {

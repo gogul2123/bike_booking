@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock } from "lucide-react";
 import BookingModal from "./bike-model";
-import { useCart } from "@/context/CartContext";
+import { useCart } from "@/hooks/CartContext";
 
 type Bike = {
   _id: string;
