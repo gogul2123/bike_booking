@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -33,13 +33,15 @@ import {
   Clock,
   UserCheck,
 } from "lucide-react";
+import { useAppContext } from "@/hooks/context";
+import { apiHeader } from "@/hooks/apiHeader";
+import { useLogOut } from "@/hooks/useLogout";
+import { getFromLocalStorage, saveToLocalStorage } from "../ui/encryption";
+import { useRouter } from "next/navigation";
 
 // Define the form schemas with Zod
-const phoneSchema = z.object({
-  phone: z
-    .string({ required_error: "Phone number is required" })
-    .min(10, "Phone number must be at least 10 digits")
-    .regex(/^\d+$/, "Phone number should contain only numbers"),
+const emailSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
 });
 
 const otpSchema = z.object({
@@ -48,32 +50,59 @@ const otpSchema = z.object({
 
 const signupSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
+  mobile: z
+    .string({ required_error: "Phone number is required" })
+    .min(10, "Phone number must be at least 10 digits")
+    .regex(/^\d+$/, "Phone number should contain only numbers"),
   termsAccepted: z
     .boolean()
     .refine((val) => val === true, "You must accept the terms and conditions"),
 });
 
-type PhoneFormData = z.infer<typeof phoneSchema>;
+type EmailFormData = z.infer<typeof emailSchema>;
 type OtpFormData = z.infer<typeof otpSchema>;
 type SignupFormData = z.infer<typeof signupSchema>;
 
-type RegistrationStatus = "INITIATED" | "COMPLETED";
-type CurrentStep = "phone" | "otp" | "registration" | "dashboard" | "success";
+type RegistrationStatus = "active" | "inactive";
+type CurrentStep = "email" | "otp" | "registration" | "dashboard" | "success";
+
+interface VerifyResponse {
+  success: boolean;
+  message: string;
+  data: {
+    token: string;
+    user: {
+      email: string;
+      userId: string;
+      role: string;
+      status: string;
+      mobile: string;
+      name: string;
+    };
+  };
+}
 
 const BikeRentalSignup: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState<CurrentStep>("phone");
+  const {
+    userData,
+    setUserData,
+    URL: API_BASE_URL,
+    isLogedIn,
+    setIsLogedIn,
+  } = useAppContext();
+  const router = useRouter();
+  const header = apiHeader();
+  const logOut = useLogOut();
+  const [currentStep, setCurrentStep] = useState<CurrentStep>("email");
   const [isLoading, setIsLoading] = useState(false);
-  const [userPhone, setUserPhone] = useState("");
-  const [registrationStatus, setRegistrationStatus] =
-    useState<RegistrationStatus | null>(null);
+  const [userEmail, setUserEmail] = useState("");
   const [resendTimer, setResendTimer] = useState(0);
   const [userName, setUserName] = useState("");
 
-  const phoneForm = useForm<PhoneFormData>({
-    resolver: zodResolver(phoneSchema),
+  const emailForm = useForm<EmailFormData>({
+    resolver: zodResolver(emailSchema),
     defaultValues: {
-      phone: "",
+      email: "",
     },
   });
 
@@ -88,37 +117,63 @@ const BikeRentalSignup: React.FC = () => {
     resolver: zodResolver(signupSchema),
     defaultValues: {
       fullName: "",
-      email: "",
+      mobile: "",
       termsAccepted: false,
     },
   });
 
-  // Simulate OTP sending
-  const sendOTP = async (phone: string) => {
-    console.log(`Sending OTP to ${phone}`);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  useEffect(() => {
+    if (isLogedIn) {
+      router.push("/dashboard");
+    }
+  }, [isLogedIn]);
 
-    setResendTimer(60);
-    const timer = setInterval(() => {
-      setResendTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
+  // Send OTP to email
+  const sendOTP = async (email: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}auth/send`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
       });
-    }, 1000);
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to send OTP");
+      }
+
+      setResendTimer(60);
+      const timer = setInterval(() => {
+        setResendTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return result;
+    } catch (error) {
+      console.error("Send OTP error:", error);
+      throw error;
+    }
   };
 
-  const handlePhoneSubmit = async (data: PhoneFormData) => {
+  const handleEmailSubmit = async (data: EmailFormData) => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      setUserPhone(data.phone);
-      await sendOTP(data.phone);
+      await sendOTP(data.email);
+      setUserEmail(data.email);
       setCurrentStep("otp");
     } catch (error) {
-      console.error("Phone submission failed:", error);
+      console.error("Email submission failed:", error);
+      emailForm.setError("email", {
+        message: "Failed to send OTP. Please try again.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -127,32 +182,47 @@ const BikeRentalSignup: React.FC = () => {
   const handleOtpSubmit = async (data: OtpFormData) => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await fetch(`${API_BASE_URL}auth/verify`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          otp: data.otp,
+        }),
+      });
 
-      if (data.otp === "123456") {
-        // Simulate API call to check registration status
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result: VerifyResponse = await response.json();
 
-        // Simulate random status for demo
-        const isNewUser = Math.random() > 0.5;
-        const status: RegistrationStatus = isNewUser
-          ? "INITIATED"
-          : "COMPLETED";
+      if (!response.ok) {
+        throw new Error(result.message || "OTP verification failed");
+      }
+      console.log("result.data", result.data);
+      if (response.status == 200) {
+        setUserData(result.data.user);
+        saveToLocalStorage("token", result.data.token);
+        saveToLocalStorage("userId", result.data.user.userId);
+        saveToLocalStorage("role", result.data.user.role);
+        saveToLocalStorage("status", result.data.user.status);
+        saveToLocalStorage("email", result.data.user.email);
+        saveToLocalStorage("mobile", result.data.user.mobile);
+        saveToLocalStorage("name", result.data.user.name);
 
-        setRegistrationStatus(status);
-
-        if (status === "COMPLETED") {
-          // Simulate getting user name for existing user
-          setUserName("John Doe");
-          setCurrentStep("dashboard");
-        } else {
+        if (result.data.user.status === "inactive") {
           setCurrentStep("registration");
+        } else {
+          router.push("/dashboard");
+          setIsLogedIn(true);
         }
-      } else {
-        otpForm.setError("otp", { message: "Invalid OTP. Please try again." });
+      } else if (response.status == 401 || response.status === 403) {
+        otpForm.setError("otp", {
+          message: result.message || "Invalid OTP. Please try again.",
+        });
       }
     } catch (error) {
       console.error("OTP verification failed:", error);
+      otpForm.setError("otp", { message: "Invalid OTP. Please try again." });
     } finally {
       setIsLoading(false);
     }
@@ -161,9 +231,39 @@ const BikeRentalSignup: React.FC = () => {
   const handleRegistrationSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setUserName(data.fullName);
-      setCurrentStep("success");
+      // Here you would typically call an update profile API
+      // For now, we'll simulate it
+      if (!header) {
+        logOut();
+        return;
+      }
+      const response = await fetch(`${API_BASE_URL}user/update-initial-data`, {
+        method: "POST",
+        headers: header,
+        body: JSON.stringify({
+          userId: getFromLocalStorage("userId"),
+          email: userEmail,
+          name: data.fullName,
+          mobile: data.mobile,
+        }),
+      });
+
+      const resData = await response.json();
+      if (response.status == 200) {
+        console.log("resData", resData);
+        setUserData(resData);
+        setUserName(resData.fullName);
+        saveToLocalStorage("name", resData.fullName);
+        saveToLocalStorage("mobile", resData.mobile);
+        saveToLocalStorage("status", "active");
+        router.push("/dashboard");
+        // setCurrentStep("success");
+      } else if (response.status == 401 || response.status === 403) {
+        console.log("bad request");
+      }
+
+      // setUserName(data.fullName);
+      // setCurrentStep("success");
     } catch (error) {
       console.error("Registration failed:", error);
     } finally {
@@ -176,7 +276,7 @@ const BikeRentalSignup: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await sendOTP(userPhone);
+      await sendOTP(userEmail);
       otpForm.setValue("otp", "");
     } catch (error) {
       console.error("Resend OTP failed:", error);
@@ -185,34 +285,34 @@ const BikeRentalSignup: React.FC = () => {
     }
   };
 
-  const renderPhoneForm = () => (
+  const renderEmailForm = () => (
     <div className="space-y-6">
       <div className="text-center mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-black/80 mb-2">
           Welcome!
         </h2>
         <p className="text-sm sm:text-base text-black/60">
-          Enter your phone number to get started
+          Enter your email address to get started
         </p>
       </div>
 
-      <Form {...phoneForm}>
+      <Form {...emailForm}>
         <div className="bg-tan-950/20 p-4 sm:p-6 rounded-lg border border-tan-800/30">
           <FormField
-            control={phoneForm.control}
-            name="phone"
+            control={emailForm.control}
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-black/80 font-medium text-sm">
-                  Phone Number
+                  Email Address
                 </FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <Input
                       {...field}
-                      type="tel"
-                      placeholder="Enter your phone number"
+                      type="email"
+                      placeholder="Enter your email address"
                       className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none text-base"
                     />
                   </div>
@@ -227,7 +327,8 @@ const BikeRentalSignup: React.FC = () => {
           variant={"gold"}
           type="submit"
           disabled={isLoading}
-          onClick={phoneForm.handleSubmit(handlePhoneSubmit)}
+          onClick={emailForm.handleSubmit(handleEmailSubmit)}
+          className="w-full bg-gradient-to-r from-tan-600 to-tan-700 hover:from-tan-700 hover:to-tan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
         >
           {isLoading ? "Sending OTP..." : "Send OTP"}
         </Button>
@@ -239,17 +340,17 @@ const BikeRentalSignup: React.FC = () => {
     <div className="space-y-6">
       <div className="text-center mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-black/80 mb-2">
-          Verify Phone
+          Verify Email
         </h2>
         <p className="text-sm sm:text-base text-black/60 break-all">
-          Enter the OTP sent to {userPhone}
+          Enter the OTP sent to {userEmail}
         </p>
       </div>
 
       <Form {...otpForm}>
         <div className="bg-tan-950/20 p-4 sm:p-6 rounded-lg border border-tan-800/30">
           <p className="text-black/50 text-xs sm:text-sm mb-6 text-center">
-            Please enter the 6-digit code. Use <strong>123456</strong> for demo.
+            Please enter the 6-digit code sent to your email.
           </p>
 
           <FormField
@@ -281,11 +382,11 @@ const BikeRentalSignup: React.FC = () => {
             <Button
               type="button"
               variant="ghost"
-              onClick={() => setCurrentStep("phone")}
+              onClick={() => setCurrentStep("email")}
               className="text-tan-600 hover:text-tan-700 flex items-center gap-1 text-sm"
             >
               <ArrowLeft className="w-4 h-4" />
-              Change Phone
+              Change Email
             </Button>
             <Button
               type="button"
@@ -357,19 +458,19 @@ const BikeRentalSignup: React.FC = () => {
 
           <FormField
             control={signupForm.control}
-            name="email"
+            name="mobile"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-black/80 font-medium text-sm">
-                  Email Address
+                  Phone Number
                 </FormLabel>
                 <FormControl>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                     <Input
                       {...field}
-                      type="email"
-                      placeholder="Enter your email address"
+                      type="tel"
+                      placeholder="Enter your phone number"
                       className="pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-tan-500 transition-colors outline-none"
                     />
                   </div>
@@ -440,10 +541,10 @@ const BikeRentalSignup: React.FC = () => {
       <div className="bg-green-50 p-4 sm:p-6 rounded-lg border border-green-200 text-center">
         <CheckCircle className="h-12 w-12 sm:h-16 sm:w-16 text-green-600 mx-auto mb-4" />
         <h3 className="text-lg sm:text-xl font-semibold text-green-800 mb-2">
-          Account Created Successfully!
+          Account Updated Successfully!
         </h3>
         <p className="text-sm sm:text-base text-green-700 mb-4">
-          Welcome to BikeRental Pro, {userName}! Your account has been created
+          Welcome to BikeRental Pro, {userName}! Your profile has been completed
           and you're ready to start renting bikes.
         </p>
         <Button
@@ -470,10 +571,9 @@ const BikeRentalSignup: React.FC = () => {
             </CardTitle>
           </div>
           <CardDescription className="text-sm sm:text-base md:text-lg text-black/60">
-            {currentStep === "phone" &&
-              "Enter your phone number to get started with BikeRental Pro"}
-            {currentStep === "otp" &&
-              "Verify your phone number with the OTP we sent"}
+            {currentStep === "email" &&
+              "Enter your email address to get started with BikeRental Pro"}
+            {currentStep === "otp" && "Verify your email with the OTP we sent"}
             {currentStep === "registration" &&
               "Complete your profile to start renting bikes"}
             {currentStep === "dashboard" &&
@@ -484,7 +584,7 @@ const BikeRentalSignup: React.FC = () => {
         </CardHeader>
 
         <CardContent className="px-4 sm:px-6">
-          {currentStep === "phone" && renderPhoneForm()}
+          {currentStep === "email" && renderEmailForm()}
           {currentStep === "otp" && renderOtpForm()}
           {currentStep === "registration" && renderRegistrationForm()}
           {currentStep === "dashboard" && renderDashboard()}

@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer/footer";
-import { CartProvider } from "@/hooks/CartContext"; 
+import { CartProvider } from "@/hooks/CartContext";
 import LandingHeader from "@/components/header/landing-header";
 import { AppProvider } from "@/hooks/context";
+import { RootLayoutClient } from "@/components/layout/root-client-layout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   return (
     <html lang="en">
       <body
@@ -34,13 +34,11 @@ export default function RootLayout({
       >
         <AppProvider>
           <CartProvider>
-            <main className="flex min-h-screen flex-col bg-background text-foreground ">
-            <LandingHeader 
-              isLoggedIn={true}
-              cartItemCount={10}
-            />
+            {/* <main className="flex min-h-screen flex-col bg-background text-foreground ">
+              <LandingHeader isLoggedIn={false} cartItemCount={10} />
               {children}
-            </main>
+            </main> */}
+            <RootLayoutClient>{children}</RootLayoutClient>
           </CartProvider>
         </AppProvider>
       </body>

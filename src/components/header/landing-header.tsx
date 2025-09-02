@@ -57,7 +57,7 @@
 //   const handleNavigation = (path: string) => {
 //     console.log(`Navigating to: ${path}`);
 //     router.push(path);
-//     setIsSidebarOpen(false); 
+//     setIsSidebarOpen(false);
 //   };
 
 //   const toggleSidebar = () => {
@@ -197,31 +197,40 @@
 //   );
 // }
 "use client";
-import { useState } from "react";
-import { FaMotorcycle, FaBars, FaTimes, FaShoppingCart, FaUser } from "react-icons/fa";
-import { useRouter } from 'next/navigation';
+import { useMemo, useState } from "react";
+import {
+  FaMotorcycle,
+  FaBars,
+  FaTimes,
+  FaShoppingCart,
+  FaUser,
+} from "react-icons/fa";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
+import { useAppContext } from "@/hooks/context";
+import { useLogOut } from "@/hooks/useLogout";
 
-interface LandingHeaderProps {
-  isLoggedIn: boolean;
-  cartItemCount?: number;
-  onLogout?: () => void;
-}
+// interface LandingHeaderProps {
+//   isLogedIn: boolean;
+//   cartItemCount?: number;
+//   onLogout?: () => void;
+// }
 
-export default function LandingHeader({ 
-  isLoggedIn, 
-  cartItemCount = 0, 
-  onLogout 
-}: LandingHeaderProps) {
+export default function LandingHeader() {
+  const { isLogedIn, cart } = useAppContext();
   const router = useRouter();
   const pathname = usePathname();
+  const logOut = useLogOut();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const cartItemCount = useMemo(() => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  }, [cart]);
 
   const handleNavigation = (path: string) => {
     console.log(`Navigating to: ${path}`);
     router.push(path);
-    setIsSidebarOpen(false); 
+    setIsSidebarOpen(false);
   };
 
   const toggleSidebar = () => {
@@ -244,8 +253,8 @@ export default function LandingHeader({
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-0">
+      <header className="sticky px-4 md:px-6  top-0 z-50 w-full bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-100 ">
+        <div className=" mx-auto lg:px-0">
           <div className="flex items-center justify-between h-18">
             {/* Mobile Menu Button - Only visible on mobile */}
             <button
@@ -276,9 +285,8 @@ export default function LandingHeader({
 
             {/* Mobile Right Side Icons */}
             <div className="md:hidden flex items-center space-x-3">
-              
               {/* Profile Icon - Only show when logged in */}
-              {isLoggedIn && (
+              {isLogedIn && (
                 <button
                   onClick={() => handleNavigation("/profile")}
                   className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-[#AC9456] to-[#9B8449] hover:from-[#9B8449] hover:to-[#8A7840] shadow-md hover:shadow-lg transition-all duration-200"
@@ -306,28 +314,26 @@ export default function LandingHeader({
                 </button>
               ))}
               <button
-                    onClick={() => handleNavigation("/cart")}
-                    className={`flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors duration-200 relative ${
-                      pathname === "/cart"
-                        ? "text-[#AC9456] bg-[#AC9456]/10"
-                        : "text-gray-700 hover:text-[#AC9456] hover:bg-[#AC9456]/5"
-                    }`}
-                    aria-label="Shopping Cart"
-                  >
-                    <FaShoppingCart className="h-5 w-5 text-gray-700 hover:text-[#AC9456]" />
-                    {/* Cart item count badge */}
-                    {cartItemCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-[#AC9456] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        {cartItemCount > 99 ? '99+' : cartItemCount}
-                      </span>
-                    )}
-                  </button>
-              
+                onClick={() => handleNavigation("/cart")}
+                className={`flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors duration-200 relative ${
+                  pathname === "/cart"
+                    ? "text-[#AC9456] bg-[#AC9456]/10"
+                    : "text-gray-700 hover:text-[#AC9456] hover:bg-[#AC9456]/5"
+                }`}
+                aria-label="Shopping Cart"
+              >
+                <FaShoppingCart className="h-5 w-5 text-gray-700 hover:text-[#AC9456]" />
+                {/* Cart item count badge */}
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-[#AC9456] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {cartItemCount > 99 ? "99+" : cartItemCount}
+                  </span>
+                )}
+              </button>
+
               {/* Desktop Cart and Profile Icons - Only show when logged in */}
-              {isLoggedIn && (
+              {isLogedIn && (
                 <div className="flex items-center space-x-4">
-                  
-                  
                   <button
                     onClick={() => handleNavigation("/profile")}
                     className={`flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors duration-200 ${
@@ -341,15 +347,15 @@ export default function LandingHeader({
                   </button>
                 </div>
               )}
-              
+
               {/* Book Now Button - Show for all users, but change text based on login state */}
-              {!isLoggedIn && (
+              {!isLogedIn && (
                 <Button
-                onClick={() => router.push("/signin")}
-                className="px-4 md:px-6 py-3 md:py-5 font-bold bg-gradient-to-r from-[#AC9456] to-[#9B8449] hover:from-[#9B8449] hover:to-[#8A7840] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-sm md:text-base"
-              >
-                Book Now
-              </Button>
+                  onClick={() => router.push("/signin")}
+                  className="px-4 md:px-6 py-3 md:py-5 font-bold bg-gradient-to-r from-[#AC9456] to-[#9B8449] hover:from-[#9B8449] hover:to-[#8A7840] text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-sm md:text-base"
+                >
+                  Book Now
+                </Button>
               )}
             </nav>
           </div>
@@ -406,7 +412,7 @@ export default function LandingHeader({
                 {item.label}
               </button>
             ))}
-            {isLoggedIn && (
+            {isLogedIn && (
               <>
                 <div className="my-4 border-t border-gray-200"></div>
                 {loggedInMenuItems.map((item) => {
@@ -437,9 +443,7 @@ export default function LandingHeader({
                 key={item.path}
                 onClick={() => handleNavigation(item.path)}
                 className={`w-full text-left px-4 py-3 text-gray-700 hover:text-[#AC9456] hover:bg-[#AC9456]/5 rounded-lg font-medium transition-all duration-200 flex items-center ${
-                  pathname === item.path
-                    ? "text-[#AC9456] bg-[#AC9456]/10"
-                    : ""
+                  pathname === item.path ? "text-[#AC9456] bg-[#AC9456]/10" : ""
                 }`}
               >
                 {item.label}
@@ -453,11 +457,10 @@ export default function LandingHeader({
             <button
               onClick={() => handleNavigation("/cart")}
               className={`w-full text-left px-4 py-3 text-gray-700 hover:text-[#AC9456] hover:bg-[#AC9456]/5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-3 ${
-                  pathname === "/cart"
-                    ? "text-[#AC9456] bg-[#AC9456]/10"
-                    : "text-gray-700 hover:text-[#AC9456] hover:bg-[#AC9456]/5"
+                pathname === "/cart"
+                  ? "text-[#AC9456] bg-[#AC9456]/10"
+                  : "text-gray-700 hover:text-[#AC9456] hover:bg-[#AC9456]/5"
               }`}
-            
             >
               <FaShoppingCart className="h-4 w-4" />
               <span>Cart</span>
@@ -469,7 +472,7 @@ export default function LandingHeader({
             </button>
 
             {/* Profile - Only for logged in users */}
-            {isLoggedIn && (
+            {isLogedIn && (
               <button
                 onClick={() => handleNavigation("/profile")}
                 className={`w-full text-left px-4 py-3 text-gray-700 hover:text-[#AC9456] hover:bg-[#AC9456]/5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-3 ${
@@ -477,7 +480,6 @@ export default function LandingHeader({
                     ? "text-[#AC9456] bg-[#AC9456]/10"
                     : "text-gray-700 hover:text-[#AC9456] hover:bg-[#AC9456]/5"
                 }`}
-               
               >
                 <FaUser className="h-4 w-4" />
                 <span>Profile</span>
@@ -485,14 +487,13 @@ export default function LandingHeader({
             )}
           </div>
 
-
           {/* Sidebar Footer */}
           <div className="px-6 mt-8 pt-6 border-t border-gray-200">
-            {isLoggedIn ? (
+            {isLogedIn ? (
               <div className="space-y-3">
                 <Button
                   onClick={() => {
-                    if (onLogout) onLogout();
+                    logOut();
                     setIsSidebarOpen(false);
                   }}
                   variant="outline"
