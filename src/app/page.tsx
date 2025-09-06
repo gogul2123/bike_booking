@@ -11,7 +11,6 @@ import StepsSection from "../components/landing/stepsSection";
 import ReviewsSection from "../components/landing/reviewsSection";
 import CTASection from "../components/landing/CTASection";
 import { FaShieldAlt, FaClock, FaWrench, FaHeadphones, FaMoneyBill } from "react-icons/fa";
-import Header from "@/components/header/header";
 import LandingHeader from "@/components/header/landing-header";
 import Footer from "@/components/footer/footer";
 import MContent from "@/components/landing/mContent";

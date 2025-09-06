@@ -218,7 +218,8 @@ import { useLogOut } from "@/hooks/useLogout";
 // }
 
 export default function LandingHeader() {
-  const { isLogedIn, cart } = useAppContext();
+  const {  cart } = useAppContext();
+  const isLogedIn = true;
   const router = useRouter();
   const pathname = usePathname();
   const logOut = useLogOut();

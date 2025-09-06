@@ -1,5 +1,5 @@
 // components/BookingSection.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { FiMapPin, FiCalendar, FiClock } from "react-icons/fi";
 import { Button } from "../ui/button";
 
@@ -28,6 +28,35 @@ const BookingSection: React.FC<BookingSectionProps> = ({
     "Ghandhipuram",
     "Coimbatore Railway Station",
   ];
+
+    // Set default date & time when component mounts
+  useEffect(() => {
+    const now = new Date();
+
+    const formatDate = (d: Date) => d.toISOString().split("T")[0];
+    const formatTime = (d: Date) =>
+      d.toTimeString().slice(0, 5); // HH:MM
+
+    if (!searchData.pickupDate) {
+      onInputChange("pickupDate", formatDate(now));
+    }
+    if (!searchData.pickupTime) {
+      onInputChange("pickupTime", formatTime(now));
+    }
+    if (!searchData.dropoffDate) {
+      // default dropoff = +1 day
+      const tomorrow = new Date(now);
+      tomorrow.setDate(now.getDate() + 1);
+      onInputChange("dropoffDate", formatDate(tomorrow));
+    }
+    if (!searchData.dropoffTime) {
+      onInputChange("dropoffTime", formatTime(now));
+    }
+  }, []);
+
+  // min values
+  const today = new Date().toISOString().split("T")[0];
+  const nowTime = new Date().toTimeString().slice(0, 5);
 
   return (
     <section className="relative -mt-16 z-20 lg:w-[90vw] block mx-auto">
@@ -67,6 +96,7 @@ const BookingSection: React.FC<BookingSectionProps> = ({
               <input
                 type="date"
                 value={searchData.pickupDate}
+                min={today}  
                 onChange={(e) => onInputChange("pickupDate", e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#AC9456] focus:border-transparent"
               />
@@ -81,6 +111,7 @@ const BookingSection: React.FC<BookingSectionProps> = ({
               <input
                 type="time"
                 value={searchData.pickupTime}
+                min={nowTime}
                 onChange={(e) => onInputChange("pickupTime", e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#AC9456] focus:border-transparent"
               />
@@ -95,6 +126,7 @@ const BookingSection: React.FC<BookingSectionProps> = ({
               <input
                 type="date"
                 value={searchData.dropoffDate}
+                min={searchData.pickupDate || today}
                 onChange={(e) => onInputChange("dropoffDate", e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#AC9456] focus:border-transparent"
               />
@@ -109,6 +141,7 @@ const BookingSection: React.FC<BookingSectionProps> = ({
               <input
                 type="time"
                 value={searchData.dropoffTime}
+                min={searchData.pickupTime || nowTime}
                 onChange={(e) => onInputChange("dropoffTime", e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#AC9456] focus:border-transparent"
               />

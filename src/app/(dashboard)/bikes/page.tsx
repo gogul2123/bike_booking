@@ -20,8 +20,8 @@ import {
   Settings,
   ShoppingCart
 } from "lucide-react";
-import BookingModal from "@/components/bikes/bike-model"; // Assuming you have a BookingModal component
-
+import BookingModal from "@/components/bikes/bike-model"; 
+import { getFromLocalStorage, saveToLocalStorage } from "@/components/ui/encryption";
 // Types
 interface BikeEngine {
   cc: number;
@@ -700,18 +700,26 @@ const BikeListingPage: React.FC = () => {
   const BikeCard: React.FC<{ bike: BikeData; index: number }> = ({ bike, index  }) => {
     const cartCount = getCartItemCount(bike._id);
     const [liked, setLiked] = useState<boolean>(false);
-    console.log("Bike Data:", bike, "Liked State:");
     // const isLiked = likedBikes.includes(bike._id);
 
   // Load liked state from localStorage on mount
+  const safeParse = <T,>(value: string | null, fallback: T): T => {
+    try {
+        if (!value) return fallback;
+        return JSON.parse(value);
+    } catch {
+        return fallback;
+    }
+  };
   useEffect(() => {
-    const storedLikes = JSON.parse(localStorage.getItem("likedBikes") || "[]");
+    const storedLikes = safeParse<string[]>(getFromLocalStorage("likedBikes"), []);
     setLiked(storedLikes.includes(bike._id));
+    console.log("Running")
   }, [bike._id]);
 
   // Toggle like state and update localStorage
   const toggleLike = () => {
-    const storedLikes = JSON.parse(localStorage.getItem("likedBikes") || "[]") as string[];
+    const storedLikes = safeParse(getFromLocalStorage("likedBikes"), []);
     let updatedLikes;
 
     if (liked) {
@@ -720,7 +728,7 @@ const BikeListingPage: React.FC = () => {
       updatedLikes = [...storedLikes, bike._id];
     }
 
-    localStorage.setItem("likedBikes", JSON.stringify(updatedLikes));
+    saveToLocalStorage("likedBikes", JSON.stringify(updatedLikes));
     setLiked(!liked);
     setLikedBikes(updatedLikes); // sync global state
   };
