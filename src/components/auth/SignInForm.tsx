@@ -35,7 +35,11 @@ interface SignInFormProps {
   isLoading: boolean;
 }
 
-export default function SignInForm({ role, onSubmit, isLoading }: SignInFormProps) {
+export default function SignInForm({
+  role,
+  onSubmit,
+  isLoading,
+}: SignInFormProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const signInForm = useForm<SignInFormData>({
@@ -51,7 +55,9 @@ export default function SignInForm({ role, onSubmit, isLoading }: SignInFormProp
   };
 
   const isAdmin = role === "admin";
-  const forgotPasswordPath = isAdmin ? "/admin/forgot-password" : "/forgot-password";
+  const forgotPasswordPath = isAdmin
+    ? "/admin/forgot-password"
+    : "/forgot-password";
   const signUpPath = "/sign-up";
 
   return (
@@ -62,7 +68,7 @@ export default function SignInForm({ role, onSubmit, isLoading }: SignInFormProp
           <div className="text-center space-y-4">
             <div className="flex justify-center">
               <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-tan-600 to-tan-700 rounded-xl shadow-lg text-white">
-                 <RiMotorbikeFill className="w-8 h-8" />
+                <RiMotorbikeFill className="w-8 h-8" />
               </div>
             </div>
             <h1 className="text-2xl font-bold text-black">
@@ -133,7 +139,11 @@ export default function SignInForm({ role, onSubmit, isLoading }: SignInFormProp
                             onClick={togglePasswordVisibility}
                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                           >
-                            {showPassword ? <IoEyeOff className="w-5 h-5" /> : <IoEye className="w-5 h-5" />}
+                            {showPassword ? (
+                              <IoEyeOff className="w-5 h-5" />
+                            ) : (
+                              <IoEye className="w-5 h-5" />
+                            )}
                           </button>
                         </div>
                       </FormControl>
@@ -166,7 +176,7 @@ export default function SignInForm({ role, onSubmit, isLoading }: SignInFormProp
 
               {/* Sign In Button */}
               <Button
-                variant={"gold"}
+                variant={"default"}
                 type="submit"
                 disabled={isLoading}
                 onClick={signInForm.handleSubmit(onSubmit)}

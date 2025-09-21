@@ -4,10 +4,11 @@ import { BikeData } from "./types";
 
 interface BikeCardProps {
   bike: BikeData;
-  isLiked: boolean;
-  onToggleLike: (bikeId: string) => void;
-  onShowAlert: (message: string, type: string) => void;
-  onBookNow: (bike: BikeData) => void;
+  index?: number;
+  isLiked?: boolean;
+  onToggleLike?: (bikeId: string) => void;
+  onShowAlert?: (message: string, type: string) => void;
+  onBookNow?: (bike: BikeData) => void;
 }
 
 const BikeCard: React.FC<BikeCardProps> = ({
