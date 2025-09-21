@@ -71,7 +71,13 @@ console.log(logedIn, "logedIn");
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const URL = process.env.NEXT_PUBLIC_API_URL ?? "";
   const IMAGE_URL = process.env.NEXT_PUBLIC_IMAGE_URL ?? "";
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [userData, setUserData] = useState<UserData | null>({
+    email: email ?? "",
+    userId: userId ?? "",
+    role: role ?? "",
+    status: status ?? "",
+    mobile,
+  });
   const [isLogedIn, setIsLogedIn] = useState<boolean>(logedIn);
   const [cart, setCart] = useState<any[]>([]);
   const [fromDate, setFromDate] = useState<Date>(getDefaultFromDate());

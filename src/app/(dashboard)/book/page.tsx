@@ -44,6 +44,11 @@ const CartPage: React.FC = () => {
     showAlert("Item removed from cart", "success");
   };
 
+  //   const handleDaysChange = (bikeId: string, newDays: number) => {
+  //     if (newDays < 1) return;
+  //     updateItemDays(bikeId, newDays);
+  //   };
+
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {
       return total + item.price_per_day_INR * item.days * item.quantity;
@@ -82,7 +87,9 @@ const CartPage: React.FC = () => {
     try {
       const res = await fetch(`${URL}booking/create-order`, {
         method: "POST",
-        headers: header,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(bookingData),
       });
 
@@ -163,7 +170,9 @@ const CartPage: React.FC = () => {
 
       const verifyResponse = await fetch(`${URL}booking/confirmBooking`, {
         method: "POST",
-        headers: header,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(verificationData),
       });
 
@@ -194,7 +203,9 @@ const CartPage: React.FC = () => {
     try {
       const res = await fetch(`${URL}booking/cancelBooking`, {
         method: "POST",
-        headers: header,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ bookingId }),
       });
       if (res.status == 200) {

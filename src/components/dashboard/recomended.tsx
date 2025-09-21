@@ -2,8 +2,9 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import React from "react";
-import BikeCard from "../bikes/bike-card";
 import { useRouter } from "next/navigation";
+import BikeCard from "../bikes/bikeCard";
+import { BikeData } from "../bikes/types";
 
 export interface Bike {
   _id: string;
@@ -25,7 +26,7 @@ export interface Bike {
 }
 
 interface RecommendedSectionProps {
-  bikesData: Bike[];
+  bikesData: BikeData[];
   scrollLeft: () => void;
   scrollRight: () => void;
   scrollContainerRef: React.RefObject<HTMLDivElement>;

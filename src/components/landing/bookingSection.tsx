@@ -29,13 +29,12 @@ const BookingSection: React.FC<BookingSectionProps> = ({
     "Coimbatore Railway Station",
   ];
 
-    // Set default date & time when component mounts
+  // Set default date & time when component mounts
   useEffect(() => {
     const now = new Date();
 
     const formatDate = (d: Date) => d.toISOString().split("T")[0];
-    const formatTime = (d: Date) =>
-      d.toTimeString().slice(0, 5); // HH:MM
+    const formatTime = (d: Date) => d.toTimeString().slice(0, 5); // HH:MM
 
     if (!searchData.pickupDate) {
       onInputChange("pickupDate", formatDate(now));
@@ -96,7 +95,7 @@ const BookingSection: React.FC<BookingSectionProps> = ({
               <input
                 type="date"
                 value={searchData.pickupDate}
-                min={today}  
+                min={today}
                 onChange={(e) => onInputChange("pickupDate", e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#AC9456] focus:border-transparent"
               />
@@ -151,7 +150,7 @@ const BookingSection: React.FC<BookingSectionProps> = ({
           <div className="mt-6 text-center">
             <Button
               onClick={onSearch}
-              variant="gold"
+              variant="default"
               className="w-60 py-6 font-semibold text-md"
             >
               <span className="flex items-center justify-center space-x-2">

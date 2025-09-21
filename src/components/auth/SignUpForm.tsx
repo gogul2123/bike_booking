@@ -324,7 +324,7 @@ const BikeRentalSignup: React.FC = () => {
         </div>
 
         <Button
-          variant={"gold"}
+          variant={"default"}
           type="submit"
           disabled={isLoading}
           onClick={emailForm.handleSubmit(handleEmailSubmit)}

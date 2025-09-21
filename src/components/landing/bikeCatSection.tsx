@@ -135,7 +135,7 @@ const BikeCategoriesSection: React.FC<BikeCategoriesSectionProps> = ({
                 </div>
 
                 <Button
-                  variant="gold"
+                  variant="default"
                   className="py-6 font-semibold text-md w-full"
                   onClick={() => {
                     if (isLogedIn) {
