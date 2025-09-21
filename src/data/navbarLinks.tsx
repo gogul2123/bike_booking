@@ -34,7 +34,7 @@ export const navbarLinks = [
   },
   {
     name: "My Rentals",
-    link: "/my-rentals",
+    link: "/book",
     icon: ShoppingCart,
   },
   {

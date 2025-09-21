@@ -218,7 +218,7 @@ import { useLogOut } from "@/hooks/useLogout";
 // }
 
 export default function LandingHeader() {
-  const {  cart } = useAppContext();
+  const { cart } = useAppContext();
   const isLogedIn = true;
   const router = useRouter();
   const pathname = usePathname();
@@ -315,7 +315,7 @@ export default function LandingHeader() {
                 </button>
               ))}
               <button
-                onClick={() => handleNavigation("/cart")}
+                onClick={() => handleNavigation("/book")}
                 className={`flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors duration-200 relative ${
                   pathname === "/cart"
                     ? "text-[#AC9456] bg-[#AC9456]/10"
