@@ -506,7 +506,6 @@
 //   return <SignUpForm />;
 // }
 
-
 "use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -632,6 +631,7 @@ const BikeRentalSignup: React.FC = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/send`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -683,6 +683,7 @@ const BikeRentalSignup: React.FC = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/verify`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -708,8 +709,7 @@ const BikeRentalSignup: React.FC = () => {
         if (result.data.user.status === "inactive") {
           setCurrentStep("registration");
         } else {
-          setUserName(result.data.user.email.split("@")[0]); // Use email prefix as name if active
-          setCurrentStep("dashboard");
+          router.push("/dashboard");
         }
       } else if (response.status == 401 || response.status === 403) {
         otpForm.setError("otp", {
@@ -1016,9 +1016,10 @@ const BikeRentalSignup: React.FC = () => {
           Your account is verified and ready to use. You can start renting bikes
           right away.
         </p>
-        <Button 
+        <Button
           onClick={() => router.push("/")}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2">
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
+        >
           Go to Dashboard
         </Button>
       </div>

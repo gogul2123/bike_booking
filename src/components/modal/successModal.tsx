@@ -10,16 +10,23 @@ interface SuccessModalProps {
   };
 }
 
-const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose, bookingDetails }) => {
+const SuccessModal: React.FC<SuccessModalProps> = ({
+  isOpen,
+  onClose,
+  bookingDetails,
+}) => {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-xl animate-fadeIn">
         <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-green-600 mb-4">Booking Confirmed!</h2>
+        <h2 className="text-2xl font-bold text-green-600 mb-4">
+          Booking Confirmed!
+        </h2>
         <p className="text-gray-600 mb-6">
-          Your bike has been successfully booked. You'll receive a confirmation email shortly.
+          Your bike has been successfully booked. You'll receive a confirmation
+          email shortly.
         </p>
 
         <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">

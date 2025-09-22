@@ -12,7 +12,7 @@ import { apiHeader } from "@/hooks/useHeader";
 // Types
 
 const CartPage: React.FC = () => {
-  const { cartItems, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, clearCart } = useCart();
   console.log("Cart items in CartPage:", cartItems);
   const { showAlert } = useAlert();
   const { URL, fromDate, toDate, userData } = useAppContext();
@@ -20,7 +20,6 @@ const CartPage: React.FC = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showFailureModal, setShowFailureModal] = useState(false);
   const logOut = useLogOut();
-  const header = apiHeader();
   const [bookingDetails, setBookingDetails] = useState({
     bookingId: "",
     paymentId: "",
@@ -35,8 +34,8 @@ const CartPage: React.FC = () => {
   };
 
   const handleCloseFailureModal = () => {
-    setShowFailureModal(false);
-    setIsProcessing(false);
+    // setShowFailureModal(false);
+    // setIsProcessing(false);
   };
 
   const handleRemoveItem = (bikeId: string) => {
@@ -136,7 +135,8 @@ const CartPage: React.FC = () => {
       description: `Booking for ${cartItems.length} item(s)`,
       order_id: orderData.data.orderId,
       handler: function (response) {
-        verifyPayment(response, orderData.data.booking.bookingId);
+        console.log("veriy payment called", response);
+        verifyPayment(response, orderData?.data?.bookingId);
       },
 
       prefill: {
@@ -151,6 +151,7 @@ const CartPage: React.FC = () => {
         ondismiss: function () {
           showAlert("Payment failed", "error");
           setIsProcessing(false);
+          cancelBooking(orderData.data.booking.bookingId);
         },
       },
     };
@@ -160,6 +161,7 @@ const CartPage: React.FC = () => {
   };
 
   const verifyPayment = async (response, bookingId) => {
+    clearCart();
     try {
       const verificationData = {
         bookingId: bookingId,
@@ -200,6 +202,7 @@ const CartPage: React.FC = () => {
   };
 
   const cancelBooking = async (bookingId) => {
+    console.log("cancelBooking called", bookingId);
     try {
       const res = await fetch(`${URL}booking/cancelBooking`, {
         method: "POST",
@@ -219,78 +222,99 @@ const CartPage: React.FC = () => {
     } catch (error) {}
   };
 
-  if (cartItems.length === 0) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
-        <div className="bg-white rounded-2xl p-6 shadow-md text-center max-w-xs">
-          <div className="mb-4 text-gray-400">
-            <CreditCard size={48} className="mx-auto" />
-          </div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">
-            Your cart is empty
-          </h2>
-          <p className="text-gray-600 mb-4">
-            Add some bikes to your cart to get started
-          </p>
-          <button
-            onClick={() => window.history.back()}
-            className="bg-[#AC9456] text-white px-4 py-2 rounded-lg font-medium"
-          >
-            Continue Browsing
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // if (cartItems.length === 0) {
+  //   return (
+  //     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
+  //       <div className="bg-white rounded-2xl p-6 shadow-md text-center max-w-xs">
+  //         <div className="mb-4 text-gray-400">
+  //           <CreditCard size={48} className="mx-auto" />
+  //         </div>
+  //         <h2 className="text-xl font-semibold text-gray-800 mb-2">
+  //           Your cart is empty
+  //         </h2>
+  //         <p className="text-gray-600 mb-4">
+  //           Add some bikes to your cart to get started
+  //         </p>
+  //         <button
+  //           onClick={() => window.history.back()}
+  //           className="bg-[#AC9456] text-white px-4 py-2 rounded-lg font-medium"
+  //         >
+  //           Continue Browsing
+  //         </button>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6">
-      <div className="max-w-md mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Your Cart</h1>
-
-        {/* Cart Items List */}
-        <div className="space-y-4 mb-6">
-          {cartItems.map((item) => (
-            <div
-              key={item.bikeId}
-              className="bg-white rounded-xl p-4 shadow-sm"
+      {cartItems.length === 0 ? (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
+          <div className="bg-white rounded-2xl p-6 shadow-md text-center max-w-xs">
+            <div className="mb-4 text-gray-400">
+              <CreditCard size={48} className="mx-auto" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              Your cart is empty
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Add some bikes to your cart to get started
+            </p>
+            <button
+              onClick={() => window.history.back()}
+              className="bg-[#AC9456] text-white px-4 py-2 rounded-lg font-medium"
             >
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <img
-                    src={item.imageUrl}
-                    alt={`${item.brand} ${item.model}`}
-                    className="w-20 h-20 object-contain rounded-lg"
-                  />
-                </div>
+              Continue Browsing
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-md mx-auto">
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">Your Cart</h1>
 
-                <div className="flex-grow">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-semibold text-gray-900">
-                        {item.brand} {item.model}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        {item.type} • {item.transmission}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveItem(item.bikeId)}
-                      className="text-gray-400 hover:text-red-500"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+          {/* Cart Items List */}
+          <div className="space-y-4 mb-6">
+            {cartItems.map((item) => (
+              <div
+                key={item.bikeId}
+                className="bg-white rounded-xl p-4 shadow-sm"
+              >
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0">
+                    <img
+                      src={item.imageUrl}
+                      alt={`${item.brand} ${item.model}`}
+                      className="w-20 h-20 object-contain rounded-lg"
+                    />
                   </div>
 
-                  {/* {item.selectedLocation && (
+                  <div className="flex-grow">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-semibold text-gray-900">
+                          {item.brand} {item.model}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {item.type} • {item.transmission}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleRemoveItem(item.bikeId)}
+                        className="text-gray-400 hover:text-red-500"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+
+                    {/* {item.selectedLocation && (
                     <div className="flex items-center mt-2 text-sm text-gray-600">
                       <MapPin size={14} className="mr-1" />
                       <span>{item.selectedLocation}</span>
                     </div>
                   )} */}
 
-                  <div className="flex justify-between items-center mt-3">
-                    {/* <div className="flex items-center">
+                    <div className="flex justify-between items-center mt-3">
+                      {/* <div className="flex items-center">
                       <span className="text-sm text-gray-600 mr-2">Days:</span>
                       <div className="flex items-center border rounded-md">
                         <button
@@ -316,73 +340,74 @@ const CartPage: React.FC = () => {
                       </div>
                     </div> */}
 
-                    <div className="text-right">
-                      <p className="text-sm text-gray-600">
-                        ₹{item.price_per_day_INR}/day
-                      </p>
-                      <p className="font-semibold text-gray-900">
-                        ₹{item.price_per_day_INR * item.days}
-                      </p>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-600">
+                          ₹{item.price_per_day_INR}/day
+                        </p>
+                        <p className="font-semibold text-gray-900">
+                          ₹{item.price_per_day_INR * item.days}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Emergency Contact Input */}
-        <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
-          <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
-            <Phone size={18} className="mr-2 text-[#AC9456]" />
-            Emergency Contact
-          </h3>
-          <p className="text-sm text-gray-600 mb-3">
-            Please provide an emergency contact number
-          </p>
-          <input
-            type="tel"
-            value={emergencyContact}
-            onChange={(e) => setEmergencyContact(e.target.value)}
-            placeholder="Enter phone number"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#AC9456] focus:border-transparent"
-          />
-        </div>
-
-        {/* Order Summary */}
-        <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Order Summary</h3>
-
-          <div className="space-y-2">
-            {cartItems.map((item) => (
-              <div key={item.bikeId} className="flex justify-between text-sm">
-                <span>
-                  {item.brand} {item.model} × {item.days} days
-                </span>
-                <span>₹{item.price_per_day_INR * item.days}</span>
-              </div>
             ))}
+          </div>
 
-            <div className="border-t pt-2 mt-2">
-              <div className="flex justify-between font-semibold text-gray-900">
-                <span>Total</span>
-                <span>₹{calculateTotal()}</span>
+          {/* Emergency Contact Input */}
+          <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+              <Phone size={18} className="mr-2 text-[#AC9456]" />
+              Emergency Contact
+            </h3>
+            <p className="text-sm text-gray-600 mb-3">
+              Please provide an emergency contact number
+            </p>
+            <input
+              type="tel"
+              value={emergencyContact}
+              onChange={(e) => setEmergencyContact(e.target.value)}
+              placeholder="Enter phone number"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#AC9456] focus:border-transparent"
+            />
+          </div>
+
+          {/* Order Summary */}
+          <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
+            <h3 className="font-semibold text-gray-900 mb-3">Order Summary</h3>
+
+            <div className="space-y-2">
+              {cartItems.map((item) => (
+                <div key={item.bikeId} className="flex justify-between text-sm">
+                  <span>
+                    {item.brand} {item.model} × {item.days} days
+                  </span>
+                  <span>₹{item.price_per_day_INR * item.days}</span>
+                </div>
+              ))}
+
+              <div className="border-t pt-2 mt-2">
+                <div className="flex justify-between font-semibold text-gray-900">
+                  <span>Total</span>
+                  <span>₹{calculateTotal()}</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Checkout Button */}
-        <button
-          onClick={createOrder}
-          disabled={isProcessing || !emergencyContact}
-          className="w-full py-3 bg-gradient-to-r from-[#AC9456] to-[#D4B76A] text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isProcessing
-            ? "Processing..."
-            : `Proceed to Pay ₹${calculateTotal()}`}
-        </button>
-      </div>
+          {/* Checkout Button */}
+          <button
+            onClick={createOrder}
+            disabled={isProcessing || !emergencyContact}
+            className="w-full py-3 bg-gradient-to-r from-[#AC9456] to-[#D4B76A] text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isProcessing
+              ? "Processing..."
+              : `Proceed to Pay ₹${calculateTotal()}`}
+          </button>
+        </div>
+      )}
 
       <SuccessModal
         isOpen={showSuccessModal}

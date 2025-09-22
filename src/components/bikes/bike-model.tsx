@@ -102,7 +102,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
   const totalPrice = bike.price * days * quantity;
   const kmChargePerKm = 5;
-  const availableCount = bike.counters.available - cartItemsAdded;
+  const availableCount = bike.counters.available;
   const maxQuantity = bike.counters.available;
 
   const handleAddToCart = () => {
@@ -141,6 +141,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
   };
 
   const handleBookNow = async () => {
+    console.log("handleBookNow called", quantity, availableCount);
     if (quantity > availableCount) {
       setShowLimitAlert(true);
       return;
@@ -590,12 +591,8 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
             <button
               onClick={handleBookNow}
-              disabled={availableCount <= 0}
-              className={`flex-1 py-3 font-medium rounded-lg transition-colors ${
-                availableCount <= 0
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-[#AC9456] to-[#D4B76A] text-white hover:opacity-90"
-              }`}
+              // disabled={availableCount <= 0}
+              className={`flex-1 py-3 font-medium rounded-lg transition-colors bg-gradient-to-r from-[#AC9456] to-[#D4B76A] text-white hover:opacity-90`}
             >
               Book Now
             </button>

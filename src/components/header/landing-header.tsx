@@ -239,7 +239,7 @@ export default function LandingHeader() {
   };
 
   const menuItems = [
-    { label: "Home", path: "/" },
+    { label: "Home", path: "/dashboard" },
     { label: "Our Bikes", path: "/bikes" },
     { label: "Contact", path: "/contact" },
     { label: "About Us", path: "/about" },

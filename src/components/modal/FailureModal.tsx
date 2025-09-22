@@ -14,7 +14,8 @@ const FailureModal = ({ isOpen, onClose, errorMessage }) => {
 
         {/* Message */}
         <p className="text-gray-600 mb-6">
-          Sorry, we couldn’t process your payment. Please try again or contact support if the issue persists.
+          Sorry, we couldn’t process your payment. Please try again or contact
+          support if the issue persists.
         </p>
 
         {/* Error Details */}
@@ -43,7 +44,9 @@ const FailureModal = ({ isOpen, onClose, errorMessage }) => {
             Try Again
           </button>
           <button
-            onClick={() => (window.location.href = "mailto:support@bikebooking.com")}
+            onClick={() =>
+              (window.location.href = "mailto:support@bikebooking.com")
+            }
             className="w-full py-3 bg-gray-500 text-white font-medium rounded-lg hover:opacity-90 transition"
           >
             Contact Support

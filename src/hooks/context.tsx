@@ -10,6 +10,7 @@ interface UserData {
   role: string;
   status: string;
   mobile: string;
+  name: string;
 }
 
 interface AppContextProps {
@@ -34,7 +35,7 @@ const getDefaultFromDate = () => {
   const date = new Date();
   // Set to next 9 AM if current time is after 9 PM
   if (date.getHours() >= 21) {
-    date.setDate(date.getDate() + 1);
+    date.setDate(date.getDate());
   }
   date.setHours(9, 0, 0, 0); // 9:00 AM
   return date;
@@ -77,6 +78,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     role: role ?? "",
     status: status ?? "",
     mobile,
+    name: name ?? "",
   });
   const [isLogedIn, setIsLogedIn] = useState<boolean>(logedIn);
   const [cart, setCart] = useState<any[]>([]);

@@ -1,6 +1,8 @@
 import React from "react";
 import { Star, Heart, Users, Fuel, Settings } from "lucide-react";
 import { BikeData } from "./types";
+import Image from "next/image";
+import { cloudinaryLoader } from "@/lib/ImageLoader";
 
 interface BikeCardProps {
   bike: BikeData;
@@ -18,16 +20,19 @@ const BikeCard: React.FC<BikeCardProps> = ({
   onShowAlert,
   onBookNow,
 }) => {
+  console.log("bike", bike, "isLiked", isLiked, "onToggleLike");
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group w-auto">
-      <div className="relative">
-        <img
+    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group w-auto relative">
+      <div className="relative ">
+        <Image
           src={bike.modelInfo.imageUrl}
-          alt={bike.modelInfo.model}
-          className="w-full h-58 object-contain group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => {
-            (e.target as HTMLImageElement).src = "/api/placeholder/400/300";
-          }}
+          alt={`${bike.modelInfo.brand} ${bike.modelInfo.model}`}
+          width={600}
+          height={500}
+          className="object-contain group-hover:scale-105 transition-transform duration-300"
+          sizes="(max-width: 768px) 100vw, 250px" // optimization hint
+          loading="lazy"
+          loader={cloudinaryLoader}
         />
         {/* <button
           onClick={() => onToggleLike(bike.bikeId)}
