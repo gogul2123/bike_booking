@@ -8,7 +8,7 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
     <>
       <div className="min-w-full">
         <main className={`flex-1 `}>
-          <LandingHeader  />
+          {/* <LandingHeader  /> */}
           {children}
         </main>
       </div>
